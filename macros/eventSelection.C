@@ -180,12 +180,14 @@ void PlotMass2Combination(TString fileName, TString treeName, Int_t numberOfBin,
       }
    }
    c->SaveAs(Form("Mass2Combination_%s_%s.pdf",cutName.Data(),tag.Data()));
-   c->Clear();
-   c->Divide(1,1);
-   h1GammaGammaMass->SetTitle("Best Combination of #gamma#gamma invariant mass");
-   h1GammaGammaMass->SetXTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
-   h1GammaGammaMass->Draw();
-   c->SaveAs(Form("Mass2Combination_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
+   if (tag==TString("etaPrime")){
+      c->Clear();
+      c->Divide(1,1);
+      h1GammaGammaMass->SetTitle("Best combination of #gamma#gamma invariant mass");
+      h1GammaGammaMass->SetXTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
+      h1GammaGammaMass->Draw();
+      c->SaveAs(Form("Mass2Combination_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
+   }
    delete c;
 }
 
