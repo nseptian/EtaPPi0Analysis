@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "plots.C": "cpp",
+        "eventSelection.C": "cpp"
+    }
+}
