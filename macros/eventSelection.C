@@ -11,9 +11,10 @@ void chi2Ranking(){
    FSModeTree::createChi2RankingTree(FNMC,NT,"","abs(RFDeltaT)<2.0");
 }
 
-void PlotMass2Combination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isOmegaCut, Bool_t isPi0Cut3);
-void PlotMass3Combination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isOmegaCut, Bool_t isPi0Cut3);
-TString GetOmegaCutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
+void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3);
+void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3);
+void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect);
+TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
 TString GetPi0CutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
 
 void setup(){
@@ -89,8 +90,8 @@ void setup(){
 
 void eventSelection(){
    setup();
-   TCanvas* c1 = new TCanvas("c1","c1",800,600);
-   TFile* fHistOutput = new TFile(rootHistFile.Data(),"RECREATE");
+   // TCanvas* c1 = new TCanvas("c1","c1",800,600);
+   // TFile* fHistOutput = new TFile(rootHistFile.Data(),"RECREATE");
    
    // TH1F* h1D  = FSModeHistogram::getTH1F(FND,NT,"","Chi2DOF","(100,0.0,25.0)","CUT(e8288)");
    // TH1F* h1MC = FSModeHistogram::getTH1F(FNMC,NT,"","Chi2DOF","(100,0.0,25.0)","CUT(e8288)");
@@ -105,32 +106,35 @@ void eventSelection(){
    // h1D->Write();
    // h1MC->Write();
 
-   // PlotMass2Combination(FND,NT,20,0.92,0.99,"CUT(e8288)","etaPrime");
-   // PlotMass2Combination(FND,NT,20,0.92,0.99,"CUT(allBase)","etaPrime");
-   // PlotMass3Combination(FND,NT,130,0.,1.3,"CUT(e8288)","all");
-   // PlotMass3Combination(FND,NT,130,0.,1.3,"allBase","all");
-   // PlotMass3Combination(FND,NT,130,0.,1.3,"allBase","all",kTRUE);
-   // PlotMass2Combination(FND,NT,200,0.0,1.0,"allBase","all",kTRUE);
-   // PlotMass2Combination(FND,NT,100,0.0,1.0,"allBase","all",kTRUE,kTRUE);
-   // PlotMass3Combination(FND,NT,130,0.0,1.3,"allBase","all",kTRUE,kTRUE);
-   PlotMass2Combination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kTRUE,kTRUE);
-   // PlotMass2Combination(FND,NT,30,0.0,0.3,"allBase","pi0",kTRUE,kTRUE);
-   // PlotMass3Combination(FND,NT,20,1.0,1.2,"allBase","check1012",kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,20,0.92,0.99,"CUT(e8288)","etaPrime");
+   // PlotMass2GammaCombination(FND,NT,20,0.92,0.99,"CUT(allBase)","etaPrime");
+   // PlotMass3GammaCombination(FND,NT,130,0.,1.3,"CUT(e8288)","all");
+   // PlotMass3GammaCombination(FND,NT,130,0.,1.3,"allBase","all");
+   // PlotMass3GammaCombination(FND,NT,130,0.,1.3,"allBase","all",kTRUE);
+   // PlotMass2GammaCombination(FND,NT,200,0.0,1.0,"allBase","all",kTRUE);
+   // PlotMass2GammaCombination(FND,NT,100,0.0,1.0,"allBase","all",kTRUE,kTRUE);
+   // PlotMass3GammaCombination(FND,NT,130,0.0,1.3,"allBase","all",kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,30,0.0,0.3,"allBase","pi0",kTRUE,kTRUE);
+   // PlotMass3GammaCombination(FND,NT,20,1.0,1.2,"allBase","check1012",kTRUE,kTRUE);
+   // PlotMass4Gamma(FND,NT,200,0.0,2.0,"allBase","all",kTRUE,kTRUE,kFALSE,kFALSE);
+   // PlotMass4Gamma(FND,NT,200,0.0,2.0,"allBase","all",kTRUE,kTRUE,kTRUE,kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,1.5,"allBase","1015",kTRUE,kTRUE,kTRUE,kTRUE);
 
    // fHistOutput->Write();
    // fHistOutput->Close();
 }
 
-void PlotMass2Combination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isOmegaCut = kFALSE, Bool_t isPi0Cut3 = kFALSE){
+void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE){
    Int_t vectorIndexPermutation[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
    TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
    TH1F *h1GammaGammaMass;
    TCanvas *c = new TCanvas("c","c",800,600);
    c->Divide(3,2);
-   if (isOmegaCut) {
+   if (isGamma3Cut) {
       Int_t vectorIndexPermutation3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
       for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
-         FSCut::defineCut(Form("omegaCut%d",iPermutation3),GetOmegaCutStringMass3Combination(vectorIndexPermutation3[iPermutation3][0],vectorIndexPermutation3[iPermutation3][1],vectorIndexPermutation3[iPermutation3][2]).Data());
+         FSCut::defineCut(Form("Gamma3Cut%d",iPermutation3),GetCutStringMass3GammaCombination(vectorIndexPermutation3[iPermutation3][0],vectorIndexPermutation3[iPermutation3][1],vectorIndexPermutation3[iPermutation3][2]).Data());
       }
    }
    if (isPi0Cut3) {
@@ -143,9 +147,9 @@ void PlotMass2Combination(TString fileName, TString treeName, Int_t numberOfBin,
       c->cd(iPermutation+1);
       TString cutString = "CUT(";
       cutString += cutName;
-      if (isOmegaCut) {
+      if (isGamma3Cut) {
          for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
-            cutString += Form(",omegaCut%d",iPermutation3);
+            cutString += Form(",Gamma3Cut%d",iPermutation3);
          }
       }
       if (isPi0Cut3) {
@@ -162,16 +166,16 @@ void PlotMass2Combination(TString fileName, TString treeName, Int_t numberOfBin,
       cutString += ")";
       cout << cutString << endl;
       TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",Form("MASS(%d,%d)",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]),binning,cutString);
-      if (iPermutation==0) h1GammaGammaMass = new TH1F(*h);
+      if (iPermutation==0) h1GammaGammaMass = (TH1F*)h->Clone();
       else h1GammaGammaMass->Add(h);
       h->SetTitle(Form("Mass(%d,%d) %s",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],cutName.Data()));
       h->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]));
       h->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
       h->Draw();
    }
-   if (isOmegaCut) {
+   if (isGamma3Cut) {
       for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
-         cutName += Form(",omegaCut%d",iPermutation3);
+         cutName += Form(",Gamma3Cut%d",iPermutation3);
       }
    }
    if (isPi0Cut3) {
@@ -191,7 +195,7 @@ void PlotMass2Combination(TString fileName, TString treeName, Int_t numberOfBin,
    delete c;
 }
 
-void PlotMass3Combination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isOmegaCut = kFALSE, Bool_t isPi0Cut3 = kFALSE){
+void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE){
    Int_t vectorIndexPermutation[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
    TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
    TCanvas *c = new TCanvas("c","c",800,600);
@@ -200,9 +204,9 @@ void PlotMass3Combination(TString fileName, TString treeName, Int_t numberOfBin,
       c->cd(iPermutation+1);
       TString cutString = "CUT(";
       cutString += cutName;
-      if (isOmegaCut) {
-         FSCut::defineCut("omegaCut",GetOmegaCutStringMass3Combination(vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][2]).Data());
-         cutString += ",omegaCut";
+      if (isGamma3Cut) {
+         FSCut::defineCut("Gamma3Cut",GetCutStringMass3GammaCombination(vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][2]).Data());
+         cutString += ",Gamma3Cut";
       }
       if (isPi0Cut3) {
          FSCut::defineCut("pi0Cut3",GetPi0CutStringMass3Combination(vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][2]).Data());
@@ -216,13 +220,81 @@ void PlotMass3Combination(TString fileName, TString treeName, Int_t numberOfBin,
       h->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
       h->Draw();
    }
-   if (isOmegaCut) cutName += "_omegaCut";
+   if (isGamma3Cut) cutName += "_Gamma3Cut";
    if (isPi0Cut3) cutName += "_pi0Cut3";
    c->SaveAs(Form("Mass3Combination_%s_%s.pdf",cutName.Data(),tag.Data()));
    delete c;
 }
 
-TString GetOmegaCutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3){
+void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE){
+   Int_t vectorIndexPermutation[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
+   TCanvas *c = new TCanvas("c","c",800,600);
+   TH1F *h1_4GammaMass;
+   c->Divide(3,2);
+   if (isGamma3Cut) {
+      Int_t vectorIndexPermutation3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
+      for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+         FSCut::defineCut(Form("Gamma3Cut%d",iPermutation3),GetCutStringMass3GammaCombination(vectorIndexPermutation3[iPermutation3][0],vectorIndexPermutation3[iPermutation3][1],vectorIndexPermutation3[iPermutation3][2]).Data());
+      }
+   }
+   if (isPi0Cut3) {
+      Int_t vectorIndexPermutation3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
+      for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+         FSCut::defineCut(Form("pi0Cut%d",iPermutation3),GetPi0CutStringMass3Combination(vectorIndexPermutation3[iPermutation3][0],vectorIndexPermutation3[iPermutation3][1],vectorIndexPermutation3[iPermutation3][2]).Data());
+      }
+   }
+   for (Int_t iPermutation = 0;iPermutation < 6; iPermutation++){
+      c->cd(iPermutation+1);
+      TString cutString = "CUT(";
+      cutString += cutName;
+      if (isGamma3Cut) {
+         for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+            cutString += Form(",Gamma3Cut%d",iPermutation3);
+         }
+      }
+      if (isPi0Cut3) {
+         for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+            cutString += Form(",pi0Cut%d",iPermutation3);
+         }
+      }
+      if (isPi0Select) {
+         Int_t iPermutation2 = 5-iPermutation;
+         FSCut::defineCut(Form("pi0Select%d",iPermutation2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.16",vectorIndexPermutation[iPermutation2][0],vectorIndexPermutation[iPermutation2][1],vectorIndexPermutation[iPermutation2][0],vectorIndexPermutation[iPermutation2][1]));
+         cutString += Form(",pi0Select%d",iPermutation2);
+      }
+      if (isEtaPrimeSelect) {
+         FSCut::defineCut(Form("etaPrimeSelect%d",iPermutation),Form("MASS(%d,%d)>0.93&&MASS(%d,%d)<0.99",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]));
+         cutString += Form(",etaPrimeSelect%d",iPermutation);
+      }
+      cutString += ")";
+      cout << "Gamma index combination: " << vectorIndexPermutation[iPermutation][0] << vectorIndexPermutation[iPermutation][1] << vectorIndexPermutation[5-iPermutation][0] << vectorIndexPermutation[5-iPermutation][1] << endl;
+      cout << cutString << endl;
+      TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",Form("MASS(%d,%d,%d,%d)",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1]),binning,cutString);
+      h->SetTitle(Form("Selection: \\eta'(\\gamma_{%d}\\gamma_{%d}) & \\pi^{0}(\\gamma_{%d}\\gamma_{%d}) %s",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1],cutName.Data()));
+      h->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1]));
+      h->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      h->Draw();
+      if (iPermutation == 0) h1_4GammaMass = (TH1F*)h->Clone("h1_4GammaMass");
+      else h1_4GammaMass->Add(h);
+   }
+   if (isGamma3Cut) cutName += "_Gamma3Cut";
+   if (isPi0Cut3) cutName += "_pi0Cut3";
+   if (isPi0Select) cutName += "_pi0Select";
+   if (isEtaPrimeSelect) cutName += "_etaPrimeSelect";
+   c->SaveAs(Form("Mass4Gamma_%s_%s.pdf",cutName.Data(),tag.Data()));
+   c->Clear();
+   c->Divide(1,1);
+   c->cd(1);
+   h1_4GammaMass->SetTitle("Total 4#gamma invariant mass");
+   h1_4GammaMass->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
+   h1_4GammaMass->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+   h1_4GammaMass->Draw();
+   c->SaveAs(Form("Mass4GammaTotal_%s_%s.pdf",cutName.Data(),tag.Data()));
+   delete c;
+}
+
+TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3){
    TString cutString = Form("MASS(%d,%d,%d)<0.7||MASS(%d,%d,%d)>0.9&&MASS(%d,%d,%d)<2.4",vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3);
    return cutString;
 }
