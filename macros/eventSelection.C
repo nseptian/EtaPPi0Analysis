@@ -16,6 +16,13 @@ void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberO
 void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect);
 TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
 TString GetPi0CutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
+void Plot1DHistWithCuts(TString fileName, TString treeName, TString varName, TString cutName, TString tag, 
+                        Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, TString yTitle, TString title,
+                        Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad,
+                        Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE);
+void DefineGamma3Cuts();
+void DefinePi0SelectCuts();
+void DefineEtaPrimeSelectCuts();
 
 void setup(){
    if (FSModeCollection::modeVector().size() != 0) return;
@@ -86,6 +93,9 @@ void setup(){
 
    FSCut::defineCut("pol135","Run==51764 || Run==51763 || Run==51762 || Run==51749 || Run==51728 || Run==51727 || Run==51636 || Run==51635 || Run==51603 || Run==51602 || Run==51594 || Run==51593 || Run==51583 || Run==51582 || Run==51574 || Run==51573 || Run==51565 || Run==51545 || Run==51521 || Run==51520 || Run==51512 || Run==51511 || Run==51504 || Run==51503 || Run==51455 || Run==51445 || Run==51437 || Run==51410 || Run==51398 || Run==51390 || Run==51363 || Run==51362 || Run==51337 || Run==51327 || Run==51318 || Run==51317 || Run==51310 || Run==51309 || Run==51293 || Run==51292 || Run==51287 || Run==51273 || Run==51272 || Run==51263 || Run==51262 || Run==51252 || Run==51251 || Run==51234 || Run==51233 || Run==51214 || Run==51202 || Run==51201 || Run==51194 || Run==51177 || Run==51171 || Run==51164 || Run==51163 || Run==51157 || Run==51152 || Run==51151 || Run==51117 || Run==51116 || Run==51098 || Run==51077 || Run==51068 || Run==51059 || Run==51058 || Run==51057 || Run==51052 || Run==51041 || Run==51034 || Run==51020 || Run==51019 || Run==50982 || Run==50955 || Run==50952 || Run==50943 || Run==50942 || Run==50941 || Run==50934 || Run==50927 || Run==50915 || Run==50914 || Run==50841 || Run==50815 || Run==50809 || Run==50799 || Run==50798 || Run==50797 || Run==50773 || Run==50757 || Run==50756 || Run==50745 || Run==50744 || Run==50743 || Run==50729 || Run==50728 || Run==50704 || Run==50703");
 
+   DefineGamma3Cuts();
+   DefinePi0SelectCuts();
+   DefineEtaPrimeSelectCuts();
 }
 
 void eventSelection(){
@@ -119,7 +129,12 @@ void eventSelection(){
    // PlotMass3GammaCombination(FND,NT,20,1.0,1.2,"allBase","check1012",kTRUE,kTRUE);
    // PlotMass4Gamma(FND,NT,200,0.0,2.0,"allBase","all",kTRUE,kTRUE,kFALSE,kFALSE);
    // PlotMass4Gamma(FND,NT,200,0.0,2.0,"allBase","all",kTRUE,kTRUE,kTRUE,kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,1.5,"allBase","1015",kTRUE,kTRUE,kTRUE,kTRUE);
+   // PlotMass4Gamma(FND,NT,100,1.0,1.5,"allBase","1015",kTRUE,kTRUE,kTRUE,kTRUE);
+
+   Plot1DHistWithCuts(FND, NT, "Chi2DOF", "allBase", "Chi2DOF_test", 
+                     20, 0.0, 5.0, "#chi^{2}/dof", "counts", "allBase",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
 
    // fHistOutput->Write();
    // fHistOutput->Close();
@@ -302,4 +317,94 @@ TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,
 TString GetPi0CutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3){
    TString cutString = Form("MASS(%d,%d,%d)<0.11 || MASS(%d,%d,%d)>0.18",vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3);
    return cutString;
+}
+
+//plot custom 1D histogram with cuts
+void Plot1DHistWithCuts(TString fileName, TString treeName, TString varName, TString cutName, TString tag, 
+                        Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, TString yTitle, TString title,
+                        Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad,
+                        Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE){
+      
+   TString binning = Form("(%d,%f,%f)",numberOfXBin,xmin,xmax);
+   TCanvas* c = new TCanvas("c","c",800,600);
+   if (isCanvasDivide) c->Divide(numberOfXPad,numberOfYPad);
+   if (isEnableCombination){
+      Int_t vectorIndexPermutation[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+      for (Int_t iPermutation=0;iPermutation<6;iPermutation++){
+         //build cut string
+         TString cutString = "CUT(";
+         cutString += cutName;
+         if (isGamma3Cut) {
+            for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+               cutString += Form(",Gamma3Cut%d",iPermutation3);
+            }
+         }
+         if (isPi0Select) {
+            Int_t iPermutation2 = 5-iPermutation;
+            cutString += Form(",pi0Select%d",iPermutation2);
+         }
+         if (isEtaPrimeSelect) {
+            cutString += Form(",etaPrimeSelect%d",iPermutation);
+         }
+         cutString += ")";
+         cout << cutString << endl;
+         //plot histogram
+         TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",Form("%s(%d,%d,%d,%d)",varName.Data(),vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1]),binning,cutString);
+         if (isCanvasDivide) c->cd(iPermutation+1);
+         h->SetTitle(Form("%s(%d,%d,%d,%d)",title.Data(),vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1]));
+         h->SetXTitle(xTitle.Data());
+         h->SetYTitle(yTitle.Data());
+         h->Draw();
+      }
+   }
+   else{
+      TString cutString = "CUT(";
+      cutString += cutName;
+      for (Int_t iPermutation=0;iPermutation<6;iPermutation++){
+         if (isGamma3Cut) {
+            for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+               cutString += Form(",Gamma3Cut%d",iPermutation3);
+            }
+         }
+         if (isPi0Select) {
+            Int_t iPermutation2 = 5-iPermutation;
+            cutString += Form(",pi0Select%d",iPermutation2);
+         }
+         if (isEtaPrimeSelect) {
+            cutString += Form(",etaPrimeSelect%d",iPermutation);
+         }
+      }
+      cutString += ")";
+      cout << cutString << endl;
+      // cout << binning << endl;
+      TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",varName,binning,cutString);
+      h->SetTitle(title.Data());
+      h->SetXTitle(xTitle.Data());
+      h->SetYTitle(yTitle.Data());
+      h->Draw();
+   }
+   if (isEnableCombination) c->SaveAs(Form("%s_%s_%s_combinationTrue.pdf",varName.Data(),cutName.Data(),tag.Data()));
+   else c->SaveAs(Form("%s_%s_%s_combinationFalse.pdf",varName.Data(),cutName.Data(),tag.Data()));
+   delete c;
+}
+
+void DefineGamma3Cuts(){
+   Int_t vectorIndexPermutation3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
+   for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
+      FSCut::defineCut(Form("Gamma3Cut%d",iPermutation3),GetCutStringMass3GammaCombination(vectorIndexPermutation3[iPermutation3][0],vectorIndexPermutation3[iPermutation3][1],vectorIndexPermutation3[iPermutation3][2]).Data());
+   }
+}
+
+void DefinePi0SelectCuts(){
+   Int_t vectorIndexPermutation[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   for (Int_t iPermutation2 = 5;iPermutation2 >= 0; iPermutation2--){
+      FSCut::defineCut(Form("pi0Select%d",iPermutation2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.16",vectorIndexPermutation[iPermutation2][0],vectorIndexPermutation[iPermutation2][1],vectorIndexPermutation[iPermutation2][0],vectorIndexPermutation[iPermutation2][1]));
+   }
+}
+
+void DefineEtaPrimeSelectCuts(){
+   Int_t vectorIndexPermutation[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   for (Int_t iPermutation = 0;iPermutation < 6; iPermutation++) {
+      FSCut::defineCut(Form("etaPrimeSelect%d",iPermutation),Form("MASS(%d,%d)>0.93&&MASS(%d,%d)<0.99",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]));
+   }
 }
