@@ -5,6 +5,8 @@ TString FNMC("/d/grid17/sdobbs/gluex_data/EtapPi0_4gamma/skimmed/tree_pi0eta__B4
 TString NT("ntFSGlueX_MODECODE");
 TString rootHistFile("histograms.root");
 
+Bool_t isSidebandSub = kTRUE;
+
 void chi2Ranking(){
    FSModeCollection::addModeInfo("100_4000000");
 //   FSModeTree::createChi2RankingTree(FND,NT,"","abs(RFDeltaT)<2.0");
@@ -83,16 +85,21 @@ void setup(){
    // FSCut::defineCut("preSkim","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2)");
 
    // VARIABLE CUTS
-   FSCut::defineCut("cet0103","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.2)<0.1)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet0102","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.15)<0.05)");    // 0.1 < t < 0.3
-   FSCut::defineCut("mccet0102","OR(abs(-1*MCMASS2(GLUEXTARGET,-1,-2)-0.15)<0.05)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet0203","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.25)<0.05)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet0304","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.35)<0.05)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet0405","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.45)<0.05)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet05075","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.625)<0.125)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet0751","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.875)<0.125)");    // 0.1 < t < 0.3
-   FSCut::defineCut("cet051","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.75)<0.25)");    // 0.5 < t < 1.0
-   FSCut::defineCut("cet0306","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.45)<0.15)");    // 0.3 < t < 0.6
+   FSCut::defineCut("cet0103","OR(abs(-1*MASS2(GLUEXTARGET,-1)-0.2)<0.1)");    // 0.1 < t < 0.3
+   FSCut::defineCut("cet0305","OR(abs(-1*MASS2(GLUEXTARGET,-1)-0.4)<0.1)");    // 0.3 < t < 0.5
+   FSCut::defineCut("cet0507","OR(abs(-1*MASS2(GLUEXTARGET,-1)-0.6)<0.1)");    // 0.5 < t < 0.7
+   FSCut::defineCut("cet0710","OR(abs(-1*MASS2(GLUEXTARGET,-1)-0.85)<0.15)");    // 0.7 < t < 1.0
+   FSCut::defineCut("cet1014","OR(abs(-1*MASS2(GLUEXTARGET,-1)-1.2)<0.2)");    // 1.0 < t < 1.4
+   FSCut::defineCut("cet1418","OR(abs(-1*MASS2(GLUEXTARGET,-1)-1.6)<0.2)");    // 1.4 < t < 1.8
+   // FSCut::defineCut("mccet0102","OR(abs(-1*MCMASS2(GLUEXTARGET,-1,-2)-0.15)<0.05)");    // 0.1 < t < 0.3
+   // FSCut::defineCut("cet0203","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.25)<0.05)");    // 0.1 < t < 0.3
+   // FSCut::defineCut("cet0304","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.35)<0.05)");    // 0.1 < t < 0.3
+   // FSCut::defineCut("cet0405","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.45)<0.05)");    // 0.1 < t < 0.3
+   // FSCut::defineCut("cet05075","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.625)<0.125)");    // 0.1 < t < 0.3
+   // FSCut::defineCut("cet0751","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.875)<0.125)");    // 0.1 < t < 0.3
+   // FSCut::defineCut("cet051","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.75)<0.25)");    // 0.5 < t < 1.0
+   // FSCut::defineCut("cet0306","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.45)<0.15)");    // 0.3 < t < 0.6
+   FSCut::defineCut("t_lt1","abs(MASS2(GLUEXTARGET,-1)<1.0)");    //|t| < 1.0
 
    FSCut::defineCut("pol0","Run==51767 || Run==51766 || Run==51731 || Run==51730 || Run==51687 || Run==51686 || Run==51685 || Run==51683 || Run==51638 || Run==51629 || Run==51628 || Run==51619 || Run==51597 || Run==51596 || Run==51587 || Run==51586 || Run==51577 || Run==51576 || Run==51568 || Run==51567 || Run==51560 || Run==51559 || Run==51539 || Run==51537 || Run==51515 || Run==51514 || Run==51507 || Run==51506 || Run==51497 || Run==51450 || Run==51449 || Run==51442 || Run==51434 || Run==51402 || Run==51394 || Run==51384 || Run==51365 || Run==51332 || Run==51331 || Run==51329 || Run==51321 || Run==51313 || Run==51312 || Run==51302 || Run==51296 || Run==51289 || Run==51283 || Run==51266 || Run==51265 || Run==51254 || Run==51237 || Run==51236 || Run==51225 || Run==51209 || Run==51205 || Run==51204 || Run==51198 || Run==51179 || Run==51174 || Run==51166 || Run==51160 || Run==51154 || Run==51142 || Run==51119 || Run==51100 || Run==51095 || Run==51073 || Run==51072 || Run==51071 || Run==51065 || Run==51064 || Run==51063 || Run==51062 || Run==51054 || Run==51047 || Run==51046 || Run==51038 || Run==51031 || Run==51030 || Run==50987 || Run==50986 || Run==50979 || Run==50961 || Run==50950 || Run==50948 || Run==50947 || Run==50946 || Run==50939 || Run==50937 || Run==50931 || Run==50930 || Run==50904 || Run==5 || Run==50839 || Run==50838 || Run==50836 || Run==50813 || Run==50807 || Run==50806 || Run==50786 || Run==50785 || Run==50771 || Run==50754 || Run==50753 || Run==50752 || Run==50740 || Run==50726 || Run==50715 || Run==50712 || Run==50707 || Run==50702 || Run==50701 || Run==50698 || Run==50697");
 
@@ -106,6 +113,9 @@ void setup(){
    DefineGamma3Cuts();
    DefinePi0SelectCuts();
    DefineEtaPrimeSelectCuts();
+   FSControl::DEBUG=1;
+
+   // FSTree::defineMacro("MANDELSTAM_T",);
 }
 
 void eventSelection(){
@@ -139,7 +149,6 @@ void eventSelection(){
    // PlotMass3GammaCombination(FND,NT,20,1.0,1.2,"allBase","check1012",kTRUE,kTRUE);
    // PlotMass4Gamma(FND,NT,200,0.0,2.0,"allBase","all",kTRUE,kTRUE,kFALSE,kFALSE);
    // PlotMass4Gamma(FND,NT,200,0.0,2.0,"allBase","all",kTRUE,kTRUE,kTRUE,kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase","SSB",kTRUE,kTRUE,kTRUE,kTRUE);
 
    // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime_noPi0Select",kTRUE,kTRUE);
 
@@ -155,6 +164,55 @@ void eventSelection(){
    // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBaseChi2Rank4","etaPrime",kTRUE,kTRUE);
    // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBaseChi2Rank5","etaPrime",kTRUE,kTRUE);
    // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBaseChi2Rank6","etaPrime",kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrimeSSB",kTRUE,kTRUE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase","SSB",kTRUE,kTRUE,kTRUE,kTRUE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase","",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kFALSE,kFALSE);
+
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase","SSB",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kFALSE,kFALSE);
+
+   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0103", "cet0103", 
+                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.1<|t|<0.3 GeV^{2}",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0103","cet0103",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0103","etaPrime",kFALSE,kFALSE);
+
+   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0305", "cet0305", 
+                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.3<|t|< 0.5 GeV^{2}",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0305","cet0305",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0305","etaPrime",kFALSE,kFALSE);
+
+   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0507", "cet0507", 
+                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.5<|t|<0.7 GeV^{2}",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0507","cet0507",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0507","etaPrime",kFALSE,kFALSE);
+
+   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0710", "cet0710", 
+                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.7<|t|<1.0 GeV^{2}",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0710","cet0710",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0710","etaPrime",kFALSE,kFALSE);
+
+   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet1014", "cet1014", 
+                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "1.0<|t|<1.4 GeV^{2}",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet1014","cet1014",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet1014","etaPrime",kFALSE,kFALSE);
+
+   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet1418", "cet1418", 
+                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "1.4<|t|<1.8 GeV^{2}",
+                     kFALSE, kFALSE, 0, 0,
+                     kFALSE, kFALSE, kFALSE, kFALSE);
+   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet1418","cet1418",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet1418","etaPrime",kFALSE,kFALSE);
 
    // fHistOutput->Write();
    // fHistOutput->Close();
@@ -193,12 +251,16 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
          }
       }
       //reject alternative combination
-      if (tag==TString("etaPrime")){
+      if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB")){
          Int_t iPermutation2 = 5-iPermutation;
          FSCut::defineCut(Form("rejectCombination%d",iPermutation2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.18",vectorIndexPermutation[iPermutation2][0],vectorIndexPermutation[iPermutation2][1],vectorIndexPermutation[iPermutation2][0],vectorIndexPermutation[iPermutation2][1]));
          cutString += Form(",rejectCombination%d",iPermutation2);
       }
       cutString += ")";
+      if (isSidebandSub && tag==TString("etaPrimeSSB")) {
+         cutString += "&&";
+         cutString += Form("CUTSUB(etaPrimeSelect%d)",iPermutation);
+      }
       cout << cutString << endl;
       TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",Form("MASS(%d,%d)",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]),binning,cutString);
       if (iPermutation==0) h1GammaGammaMass = (TH1F*)h->Clone();
@@ -224,6 +286,8 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
       c->Divide(1,1);
       h1GammaGammaMass->SetTitle("Sum of combination of #gamma#gamma invariant mass");
       h1GammaGammaMass->SetXTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
+      h1GammaGammaMass->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      h1GammaGammaMass->GetYaxis()->SetRangeUser(0,1.2*h1GammaGammaMass->GetMaximum());
       h1GammaGammaMass->Draw();
       c->SaveAs(Form("Mass2Combination_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
    }
@@ -267,7 +331,6 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
    TCanvas *c = new TCanvas("c","c",800,600);
    TH1F *h1_4GammaMass;
    c->Divide(3,2);
-   Bool_t isSidebandSub=kTRUE;
    if (isGamma3Cut) {
       Int_t vectorIndexPermutation3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
       for (Int_t iPermutation3 = 0;iPermutation3 < 4; iPermutation3++){
@@ -306,7 +369,7 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
       cutString += ")";
       if (isEtaPrimeSelect && isSidebandSub) {
          cutString += "&&";
-         cutString += Form("CUTSB(etaPrimeSelect%d)",iPermutation);
+         cutString += Form("CUTSUB(etaPrimeSelect%d)",iPermutation);
       }
       cout << "Gamma index combination: " << vectorIndexPermutation[iPermutation][0] << vectorIndexPermutation[iPermutation][1] << vectorIndexPermutation[5-iPermutation][0] << vectorIndexPermutation[5-iPermutation][1] << endl;
       cout << cutString << endl;
@@ -334,6 +397,12 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
    delete c;
 }
 
+// TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3){
+//    TString cutString = Form("MASS(%d,%d,%d)<2.4",vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3);
+//    return cutString;
+// }
+
+// with omega 3gamma cuts
 TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3){
    TString cutString = Form("MASS(%d,%d,%d)<0.7||MASS(%d,%d,%d)>0.9&&MASS(%d,%d,%d)<2.4",vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3);
    return cutString;
@@ -420,6 +489,7 @@ void Plot2DHistWithCuts(TString fileName, TString treeName, TString varName, TSt
                         Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, Int_t numberOfYBin, Double_t ymin, Double_t ymax, TString yTitle, TString title,
                         Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad,
                         Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE){
+   
 
 }
 
@@ -439,7 +509,6 @@ void DefinePi0SelectCuts(){
 
 void DefineEtaPrimeSelectCuts(){
    Int_t vectorIndexPermutation[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
-   Bool_t isSidebandSub = kTRUE;
    for (Int_t iPermutation = 0;iPermutation < 6; iPermutation++) {
       TString SelectMassString = Form("MASS(%d,%d)>0.93&&MASS(%d,%d)<0.99",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]);
       if (!isSidebandSub) FSCut::defineCut(Form("etaPrimeSelect%d",iPermutation),SelectMassString.Data());
@@ -448,7 +517,7 @@ void DefineEtaPrimeSelectCuts(){
          SelectMassSBString += "||";
          SelectMassSBString += Form("(MASS(%d,%d)>1.02&&MASS(%d,%d)<1.04)",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]);
          cout << SelectMassString << ", " << SelectMassSBString << endl;
-         FSCut::defineCut(Form("etaPrimeSelect%d",iPermutation),SelectMassString.Data(),SelectMassSBString.Data(),0.75);
+         FSCut::defineCut(Form("etaPrimeSelect%d",iPermutation),SelectMassString.Data(),SelectMassSBString.Data(),3.0/4.0);
       }
    }
 }
