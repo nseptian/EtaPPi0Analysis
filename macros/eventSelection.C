@@ -22,6 +22,9 @@ void Plot1DHistWithCuts(TString fileName, TString treeName, TString varName, TSt
                         Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, TString yTitle, TString title,
                         Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad,
                         Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE);
+void Plot2DHistWithCuts(TString fileName, TString treeName, TString varNameX, TString varNameY, TString cutName, TString tag, 
+                        Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, Int_t numberOfYBin, Double_t ymin, Double_t ymax, TString yTitle, TString title,
+                        Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad);
 void DefineGamma3Cuts();
 void DefinePi0SelectCuts();
 void DefineEtaPrimeSelectCuts();
@@ -99,7 +102,7 @@ void setup(){
    // FSCut::defineCut("cet0751","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.875)<0.125)");    // 0.1 < t < 0.3
    // FSCut::defineCut("cet051","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.75)<0.25)");    // 0.5 < t < 1.0
    // FSCut::defineCut("cet0306","OR(abs(-1*MASS2(GLUEXTARGET,-[p+],-[pi+])-0.45)<0.15)");    // 0.3 < t < 0.6
-   FSCut::defineCut("t_lt1","abs(MASS2(GLUEXTARGET,-1)<1.0)");    //|t| < 1.0
+   FSCut::defineCut("t_lt1","abs(MASS2(GLUEXTARGET,-1))<1.0");    //|t| < 1.0
 
    FSCut::defineCut("pol0","Run==51767 || Run==51766 || Run==51731 || Run==51730 || Run==51687 || Run==51686 || Run==51685 || Run==51683 || Run==51638 || Run==51629 || Run==51628 || Run==51619 || Run==51597 || Run==51596 || Run==51587 || Run==51586 || Run==51577 || Run==51576 || Run==51568 || Run==51567 || Run==51560 || Run==51559 || Run==51539 || Run==51537 || Run==51515 || Run==51514 || Run==51507 || Run==51506 || Run==51497 || Run==51450 || Run==51449 || Run==51442 || Run==51434 || Run==51402 || Run==51394 || Run==51384 || Run==51365 || Run==51332 || Run==51331 || Run==51329 || Run==51321 || Run==51313 || Run==51312 || Run==51302 || Run==51296 || Run==51289 || Run==51283 || Run==51266 || Run==51265 || Run==51254 || Run==51237 || Run==51236 || Run==51225 || Run==51209 || Run==51205 || Run==51204 || Run==51198 || Run==51179 || Run==51174 || Run==51166 || Run==51160 || Run==51154 || Run==51142 || Run==51119 || Run==51100 || Run==51095 || Run==51073 || Run==51072 || Run==51071 || Run==51065 || Run==51064 || Run==51063 || Run==51062 || Run==51054 || Run==51047 || Run==51046 || Run==51038 || Run==51031 || Run==51030 || Run==50987 || Run==50986 || Run==50979 || Run==50961 || Run==50950 || Run==50948 || Run==50947 || Run==50946 || Run==50939 || Run==50937 || Run==50931 || Run==50930 || Run==50904 || Run==5 || Run==50839 || Run==50838 || Run==50836 || Run==50813 || Run==50807 || Run==50806 || Run==50786 || Run==50785 || Run==50771 || Run==50754 || Run==50753 || Run==50752 || Run==50740 || Run==50726 || Run==50715 || Run==50712 || Run==50707 || Run==50702 || Run==50701 || Run==50698 || Run==50697");
 
@@ -113,9 +116,9 @@ void setup(){
    DefineGamma3Cuts();
    DefinePi0SelectCuts();
    DefineEtaPrimeSelectCuts();
-   FSControl::DEBUG=1;
+   FSControl::DEBUG=0;
 
-   // FSTree::defineMacro("MANDELSTAM_T",);
+   FSTree::defineMacro("MANDELSTAM_T",1,"(pow(((-EnP[I]+0.938272)),2)-pow(((-PxP[I]+0.0)),2)-pow(((-PyP[I]+0.0)),2)-pow(((-PzP[I]+0.0)),2))");
 }
 
 void eventSelection(){
@@ -172,50 +175,70 @@ void eventSelection(){
    // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase","SSB",kFALSE,kFALSE,kTRUE,kTRUE);
    // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kFALSE,kFALSE);
 
-   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0103", "cet0103", 
-                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.1<|t|<0.3 GeV^{2}",
-                     kFALSE, kFALSE, 0, 0,
-                     kFALSE, kFALSE, kFALSE, kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0103","cet0103",kFALSE,kFALSE,kTRUE,kTRUE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0103","etaPrime",kFALSE,kFALSE);
+   // Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0103", "cet0103", 
+   //                   100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.1<|t|<0.3 GeV^{2}",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0103","cet0103",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0103","etaPrime",kFALSE,kFALSE);
 
-   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0305", "cet0305", 
-                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.3<|t|< 0.5 GeV^{2}",
-                     kFALSE, kFALSE, 0, 0,
-                     kFALSE, kFALSE, kFALSE, kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0305","cet0305",kFALSE,kFALSE,kTRUE,kTRUE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0305","etaPrime",kFALSE,kFALSE);
+   // Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0305", "cet0305", 
+   //                   100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.3<|t|< 0.5 GeV^{2}",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0305","cet0305",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0305","etaPrime",kFALSE,kFALSE);
 
-   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0507", "cet0507", 
-                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.5<|t|<0.7 GeV^{2}",
-                     kFALSE, kFALSE, 0, 0,
-                     kFALSE, kFALSE, kFALSE, kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0507","cet0507",kFALSE,kFALSE,kTRUE,kTRUE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0507","etaPrime",kFALSE,kFALSE);
+   // Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0507", "cet0507", 
+   //                   100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.5<|t|<0.7 GeV^{2}",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0507","cet0507",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0507","etaPrime",kFALSE,kFALSE);
 
-   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0710", "cet0710", 
-                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.7<|t|<1.0 GeV^{2}",
-                     kFALSE, kFALSE, 0, 0,
-                     kFALSE, kFALSE, kFALSE, kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0710","cet0710",kFALSE,kFALSE,kTRUE,kTRUE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0710","etaPrime",kFALSE,kFALSE);
+   // Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet0710", "cet0710", 
+   //                   100, -5.0, 0.0, "t (GeV^{2})", "counts", "0.7<|t|<1.0 GeV^{2}",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet0710","cet0710",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet0710","etaPrime",kFALSE,kFALSE);
 
-   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet1014", "cet1014", 
-                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "1.0<|t|<1.4 GeV^{2}",
-                     kFALSE, kFALSE, 0, 0,
-                     kFALSE, kFALSE, kFALSE, kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet1014","cet1014",kFALSE,kFALSE,kTRUE,kTRUE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet1014","etaPrime",kFALSE,kFALSE);
+   // Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet1014", "cet1014", 
+   //                   100, -5.0, 0.0, "t (GeV^{2})", "counts", "1.0<|t|<1.4 GeV^{2}",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet1014","cet1014",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet1014","etaPrime",kFALSE,kFALSE);
 
-   Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet1418", "cet1418", 
-                     100, -5.0, 0.0, "t (GeV^{2})", "counts", "1.4<|t|<1.8 GeV^{2}",
-                     kFALSE, kFALSE, 0, 0,
-                     kFALSE, kFALSE, kFALSE, kFALSE);
-   PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet1418","cet1418",kFALSE,kFALSE,kTRUE,kTRUE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet1418","etaPrime",kFALSE,kFALSE);
+   // Plot1DHistWithCuts(FND, NT, "MASS2(GLUEXTARGET,-1)", "allBase,cet1418", "cet1418", 
+   //                   100, -5.0, 0.0, "t (GeV^{2})", "counts", "1.4<|t|<1.8 GeV^{2}",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+   // PlotMass4Gamma(FND,NT,100,1.0,2.0,"allBase,cet1418","cet1418",kFALSE,kFALSE,kTRUE,kTRUE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase,cet1418","etaPrime",kFALSE,kFALSE);
 
    // fHistOutput->Write();
    // fHistOutput->Close();
+   // FSTree::testMacro("MANDELSTAM_T");
+   // Plot1DHistWithCuts(FND, NT, "MANDELSTAM_T(1)", "allBase", "t_testMacro", 
+   //                   100, -10.0, 0.0, "t (GeV^{2})", "counts", "t_testMacro",
+   //                   kFALSE, kFALSE, 0, 0,
+   //                   kFALSE, kFALSE, kFALSE, kFALSE);
+
+   // make histogram for each 3 gamma combination cuts
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kTRUE,kFALSE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime",kTRUE,kTRUE);
+   // FSModeHistogram::dumpHistogramCache("GammaGammaMass_etaPrime");
+
+   PlotMass4Gamma(FND,NT,150,0.0,3.0,"allBase","all_SSB",kFALSE,kFALSE,kTRUE,kTRUE);
+   PlotMass4Gamma(FND,NT,150,0.0,3.0,"allBase","all_SSB",kTRUE,kFALSE,kTRUE,kTRUE);
+   PlotMass4Gamma(FND,NT,150,0.0,3.0,"allBase","all_SSB",kTRUE,kTRUE,kTRUE,kTRUE);
+   FSModeHistogram::dumpHistogramCache("4GammaMassEtaPrimePi0_differentGamma3Cuts_SSB");
+
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,3)", "MASS(4,5)", "allBase", "m23m45",
+   //                      100, 0.0, 2.0, "mass(2,3)", 100, 0.0, 2.0, "mass(4,5)", "mass(2,3) vs mass(4,5)",
+   //                      kFALSE, kFALSE, 0, 0); 
 }
 
 void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE){
@@ -267,7 +290,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
       else h1GammaGammaMass->Add(h);
       h->SetTitle(Form("Mass(%d,%d) %s",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],cutName.Data()));
       h->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1]));
-      h->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      h->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
       h->Draw();
    }
    if (isGamma3Cut) {
@@ -286,7 +309,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
       c->Divide(1,1);
       h1GammaGammaMass->SetTitle("Sum of combination of #gamma#gamma invariant mass");
       h1GammaGammaMass->SetXTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
-      h1GammaGammaMass->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      h1GammaGammaMass->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
       h1GammaGammaMass->GetYaxis()->SetRangeUser(0,1.2*h1GammaGammaMass->GetMaximum());
       h1GammaGammaMass->Draw();
       c->SaveAs(Form("Mass2Combination_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
@@ -316,7 +339,7 @@ void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberO
       TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",Form("MASS(%d,%d,%d)",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][2]),binning,cutString);
       h->SetTitle(Form("Mass(%d,%d,%d) %s",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][2],cutName.Data()));
       h->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[iPermutation][2]));
-      h->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      h->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
       h->Draw();
    }
    if (isGamma3Cut) cutName += "_Gamma3Cut";
@@ -376,7 +399,7 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
       TH1F* h = FSModeHistogram::getTH1F(fileName,treeName,"",Form("MASS(%d,%d,%d,%d)",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1]),binning,cutString);
       h->SetTitle(Form("Selection: \\eta'(\\gamma_{%d}\\gamma_{%d}) & \\pi^{0}(\\gamma_{%d}\\gamma_{%d}) %s",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1],cutName.Data()));
       h->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexPermutation[iPermutation][0],vectorIndexPermutation[iPermutation][1],vectorIndexPermutation[5-iPermutation][0],vectorIndexPermutation[5-iPermutation][1]));
-      h->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      h->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
       h->Draw();
       if (iPermutation == 0) h1_4GammaMass = (TH1F*)h->Clone("h1_4GammaMass");
       else h1_4GammaMass->Add(h);
@@ -391,7 +414,7 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
    c->cd(1);
    h1_4GammaMass->SetTitle("Total 4#gamma invariant mass");
    h1_4GammaMass->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
-   h1_4GammaMass->SetYTitle(Form("Events / %f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+   h1_4GammaMass->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
    h1_4GammaMass->Draw();
    c->SaveAs(Form("Mass4GammaTotal_%s_%s.pdf",cutName.Data(),tag.Data()));
    delete c;
@@ -485,12 +508,26 @@ void Plot1DHistWithCuts(TString fileName, TString treeName, TString varName, TSt
 }
 
 //plot custom 2D histogram with cuts
-void Plot2DHistWithCuts(TString fileName, TString treeName, TString varName, TString cutName, TString tag, 
+void Plot2DHistWithCuts(TString fileName, TString treeName, TString varNameX, TString varNameY, TString cutName, TString tag, 
                         Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, Int_t numberOfYBin, Double_t ymin, Double_t ymax, TString yTitle, TString title,
-                        Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad,
-                        Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE){
+                        Bool_t isEnableCombination, Bool_t isCanvasDivide, Int_t numberOfXPad, Int_t numberOfYPad){
    
-
+   TString binning = Form("(%d,%f,%f,%d,%f,%f)",numberOfXBin,xmin,xmax,numberOfYBin,ymin,ymax);
+   TCanvas* c = new TCanvas("c","c",800,600);
+   if (isCanvasDivide) c->Divide(numberOfXPad,numberOfYPad);
+   
+   TString cutString = "CUT(";
+   cutString += cutName;
+   cutString += ")";
+   cout << cutString << endl;
+   // cout << binning << endl;
+   TH2F *h = FSModeHistogram::getTH2F(fileName,treeName,"",varNameX+":"+varNameY,binning,cutString);
+   h->SetTitle(title.Data());
+   h->SetXTitle(xTitle.Data());
+   h->SetYTitle(yTitle.Data());
+   h->Sumw2();
+   h->Draw("COLZ");
+   c->SaveAs(Form("%s_%s_%s_%s.pdf",varNameX.Data(),varNameY.Data(),cutName.Data(),tag.Data()));
 }
 
 void DefineGamma3Cuts(){
