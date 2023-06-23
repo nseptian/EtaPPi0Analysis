@@ -1,5 +1,5 @@
-TString fileName = "histograms/4GammaMass_all_SSB_LMAC.cache.root";
-TString outputTag = "4GammaEtaPrimePi0SSBLMACHist";
+TString fileName = "histograms/4GammaMass_all_SSB_LMAC_t_lt0.5.cache.root";
+TString outputTag = "4GammaEtaPrimePi0SSBLMAC_t_lt0.5_Hist";
 
 const Int_t NCombinations = 6;
 const Int_t NCuts = 2;
