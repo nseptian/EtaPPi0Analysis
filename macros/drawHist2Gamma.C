@@ -1,11 +1,11 @@
-TString fileName = "histograms/2DAlternativeEtaPiCuts_etaPrime.cache.root";
-TString outputTag = "etaPrimeHist_2DAlternativeEtaPiCuts";
+TString fileName = "histograms/2DAlternative3GammaCuts_etaPrime.cache.root";
+TString outputTag = "etaPrimeHist_2DAlternative3GammaCuts";
 
 const Int_t NCombinations = 6;
-const Int_t NCuts = 4;
+const Int_t NCuts = 2;
 const Int_t NHist = NCombinations*NCuts;
 const Bool_t isFitHist = kTRUE;
-const Int_t iHistToFit = 2;
+const Int_t iHistToFit = 1;
 
 void gluex_style();
 void drawHist2Gamma(){
@@ -62,10 +62,10 @@ void drawHist2Gamma(){
 		h1_total[iColor]->Draw("SAME");
 	}
 	TLegend *leg = new TLegend(0.2,0.73,0.45,0.9);
-	leg->AddEntry(h1_total[0],"all Base + #pi^{0} select","lep");
-	leg->AddEntry(h1_total[1],"+ 2D #pi^{0} alternative cuts","lep");
-	leg->AddEntry(h1_total[2],"+ 2D #pi^{0} #eta alternative cuts","lep");
-	leg->AddEntry(h1_total[3],"+ 2D alternative cuts","lep");
+	leg->AddEntry(h1_total[0],"all Base + 2D alternative cuts","lep");
+	leg->AddEntry(h1_total[1],"+ 3#gamma cuts","lep");
+	// leg->AddEntry(h1_total[2],"+ 2D #pi^{0} #eta alternative cuts","lep");
+	// leg->AddEntry(h1_total[3],"+ 2D alternative cuts","lep");
 	leg->Draw();
 	c1->SaveAs(Form("plots/%s_total.pdf",outputTag.Data()));
 	
@@ -82,7 +82,7 @@ void drawHist2Gamma(){
 	f1->SetParameter(0,1);
 	f1->SetParameter(1,0.957);
 	f1->SetParameter(2,0.01);
-	f1->SetParameter(3,800);
+	f1->SetParameter(3,200);
 	f1->SetParameter(4,-10);
 	f1->SetParameter(5,0);
 	h1_total[iHistToFit]->Fit("f1","R");
@@ -131,17 +131,17 @@ void drawHist2Gamma(){
 	tex->SetTextSize(0.04);
 	tex->SetTextColor(1);
 	tex->SetTextAlign(12);
-	tex->DrawLatex(0.25,0.4,Form("S (3#sigma) = %.0f",signalYield));
-	tex->DrawLatex(0.25,0.35,Form("B (3#sigma) = %.0f",backgroundYield));
-	tex->DrawLatex(0.25,0.3,Form("S/B = %.2f",signalYield/backgroundYield));
+	tex->DrawLatex(0.25,0.6,Form("S (3#sigma) = %.0f",signalYield));
+	tex->DrawLatex(0.25,0.55,Form("B (3#sigma) = %.0f",backgroundYield));
+	tex->DrawLatex(0.25,0.5,Form("S/B = %.2f",signalYield/backgroundYield));
 	// Draw mean and sigma of the gaussian function
-	tex->DrawLatex(0.25,0.5,Form("#mu = %.3f #pm %.3f",f1->GetParameter(1),f1->GetParError(1)));
-	tex->DrawLatex(0.25,0.45,Form("#sigma = %.3f #pm %.3f",f1->GetParameter(2),f1->GetParError(2)));
+	tex->DrawLatex(0.25,0.7,Form("#mu = %.3f #pm %.3f",f1->GetParameter(1),f1->GetParError(1)));
+	tex->DrawLatex(0.25,0.65,Form("#sigma = %.3f #pm %.3f",f1->GetParameter(2),f1->GetParError(2)));
 
 	// tex->DrawLatex(0.2,0.65,Form("S/#sqrt{S+B} = %.2f",gausIntegral/sqrt(gausIntegral+backgroundIntegral)));
 	// tex->DrawLatex(0.2,0.6,Form("S/#sqrt{B} = %.2f",gausIntegral/sqrt(backgroundIntegral)));
 	
-	c1->SaveAs(Form("plots/%s_total_fit_allBase_LMAC.pdf",outputTag.Data()));
+	c1->SaveAs(Form("plots/%s_total_fit_allBase.pdf",outputTag.Data()));
 
 }
 
