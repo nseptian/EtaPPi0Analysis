@@ -14,7 +14,9 @@ void chi2Ranking(){
 
 void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isLMACut, Bool_t isSidebandSub);
 void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isSidebandSub);
-void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect, Bool_t isLMACut, Bool_t is2DEtaPi0Cut, Bool_t isSidebandSub, Bool_t isIncludeMC = kFALSE, TString fileNameMC = "", TString fileNameMCThrown = "", TString mcThrownCutName = "");
+void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag,
+                     Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect, Bool_t isLMACut, Bool_t is2DEtaPi0Cut, Bool_t isDeltaCut,Bool_t isOmegaMomentumCut,
+                     Bool_t isSidebandSub, Bool_t isIncludeMC = kFALSE, TString fileNameMC = "", TString fileNameMCThrown = "", TString mcThrownCutName = "");
 TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
 TString GetPi0CutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
 void Plot1DHistWithCuts(TString fileName, TString treeName, TString varName, TString cutName, TString tag, 
@@ -34,6 +36,7 @@ void DefineLMACuts();
 void Define2DAlternativePi0Cuts();
 void Define2DAlternativeEtaCuts();
 void DefineDeltaCuts();
+void DefineOmegaMomentumCuts();
 
 Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
@@ -43,6 +46,11 @@ Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t
 Double_t pi0Momentum3GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC);
+
+Double_t cosTheta2G2G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
+                              Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
+                              Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
+                              Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD);
 
 void setup(){
    if (FSModeCollection::modeVector().size() != 0) return;
@@ -124,6 +132,7 @@ void setup(){
    Define2DAlternativePi0Cuts();
    Define2DAlternativeEtaCuts();
    DefineDeltaCuts();
+   DefineOmegaMomentumCuts();
 
    FSControl::DEBUG=0;
 
@@ -137,6 +146,11 @@ void setup(){
                                                 "PxP[I],PyP[I],PzP[I],EnP[I],"
                                                 "PxP[J],PyP[J],PzP[J],EnP[J],"
                                                 "PxP[M],PyP[M],PzP[M],EnP[M])");
+   FSTree::defineMacro("cosTheta2G2G4GFrame", 4, "cosTheta2G2G4GFrame("
+                                                "PxP[I],PyP[I],PzP[I],EnP[I],"
+                                                "PxP[J],PyP[J],PzP[J],EnP[J],"
+                                                "PxP[M],PyP[M],PzP[M],EnP[M],"
+                                                "PxP[N],PyP[N],PzP[N],EnP[N])");
 
    FSTree::showDefinedMacros();
 
@@ -311,20 +325,20 @@ void eventSelection(){
    //                      kFALSE, 0);
 
    // check baryon contributions from proton + extra photon
-   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MASS(1,3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass13",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 30,0.9,4.00, "m_{p#gamma3} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MASS(1,3)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass13",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 60,0.9,4.00, "m_{p#gamma3} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MASS(1,2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass345_mass12",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 30,0.9,4.00, "m_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MASS(1,2)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0", "mass345_mass12",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 60,0.9,4.00, "m_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MASS(1,3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass13_MC",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 30,0.9,4.00, "m_{p#gamma3} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MASS(1,3)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass13_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 60,0.9,4.00, "m_{p#gamma3} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "MASS(1,2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass345_mass12_MC",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 30,0.9,4.00, "p_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "MASS(1,2)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0", "mass345_mass12_MC",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 60,0.9,4.00, "p_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
    // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MASS(1,2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass12",
@@ -424,54 +438,54 @@ void eventSelection(){
    // FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCut_etaPrime");
 
    // check omega momentum
-   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_momentum245",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_momentum245",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_momentum345",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_momentum345",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_momentum245_MC",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_momentum245_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_momentum345_MC",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_momentum345_MC",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
    // momentum with 2D 3gamma mass and momentum cut
-   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,Gamma3Cut2", "mass245_momentum245",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaMomentumCut0", "mass245_momentum245",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,Gamma3Cut3", "mass345_momentum345",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaMomentumCut0", "mass345_momentum345",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,Gamma3Cut2", "mass245_momentum245_MC",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaMomentumCut0", "mass245_momentum245_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,Gamma3Cut3", "mass345_momentum345_MC",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaMomentumCut0", "mass345_momentum345_MC",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_costheta3G4G",
-                        150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
-                        kFALSE, 0);
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_costheta3G4G",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
 
-   Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_costheta3G4G_MC",
-                        150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
-                        kFALSE, 0);
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_costheta3G4G_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
 
-   Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_costheta3G4G",
-                        150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
-                        kFALSE, 0);
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_costheta3G4G",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
 
-   Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_costheta3G4G_MC",
-                        150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
-                        kFALSE, 0);
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_costheta3G4G_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
 
    // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "pi0Momentum3GFrame(4;5;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,Gamma3Cut2", "mass245_Pi0Momentum3GFrame",
    //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,1.0, "p_{#pi^{0}}^{3#gamma}", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
@@ -499,8 +513,70 @@ void eventSelection(){
    // Plot2DHistWithCuts(FNMC, NT, "MASS(2,1)", "MOMENTUM(3,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum345_MC",
    //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
    //                      kFALSE, 0);
+   
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,1)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum245",
+   //                      100,0.0,4.0, "m_{#gamma3p} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,1)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum345",
+   //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,1)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum245_MC",
+   //                      100,0.0,4.0, "m_{#gamma3p} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,1)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum345_MC",
+   //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,3)", "cosTheta2G2G4GFrame(2;3;4;5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass23_costheta2GPi04GFrame",
+   //                      100,0.9,1.0, "m_{#gamma2#gamma3} (GeV)", 100,-1.0,-0.9999, "cos(#theta_{#pi^{0}2#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,3)", "cosTheta2G2G4GFrame(2;3;4;5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass23_costheta2GPi04GFrame_MC",
+   //                      100,0.9,1.0, "m_{#gamma2#gamma3} (GeV)", 100,-1.0,-0.9999, "cos(#theta_{#pi^{0}2#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
 
    
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,1)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum245",
+   //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,1)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum345",
+   //                      100,0.0,4.0, "m_{#gamma3p} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,1)", "MOMENTUM(2,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum245_MC",
+   //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,1)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum345_MC",
+   //                      100,0.0,4.0, "m_{#gamma3p} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
+   // TH2F* h2_mass245_mass12 = Get2DHistWithCuts(FND, NT, "MASS(2,1)", "MOMENTUM(2,4,5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum245",
+   //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma2#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   //                      kFALSE, 0);
+
+   // Double_t grad = (8.5-6)/(1.8-1);
+   // Double_t y_intersect = 1.0;
+   
+   // TF1* f_mass245_mass12_cut_line = new TF1("f_mass245_mass12_cut_line","[0]*x+[1]",0.0,4.0);
+   // f_mass245_mass12_cut_line->SetParameter(0,grad);
+   // f_mass245_mass12_cut_line->SetParameter(1,y_intersect);
+
+   // TCanvas* c_mass245_mass12 = new TCanvas("c_mass245_mass12","c_mass245_mass12",800,600);
+   // h2_mass245_mass12->Draw("colz");
+   // f_mass245_mass12_cut_line->Draw("SAME");
+   // c_mass245_mass12->SaveAs("plots/mass245_mass12.pdf");   
+
+   
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCutOmegaMomentumCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCutOmegaMomentumCut_etaPrime");
+
+   // FSModeHistogram::readHistogramCache();
+   PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
+   PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut_SSB",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kTRUE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
+   // FSModeHistogram::dumpHistogramCache();
 
  }
 
@@ -537,7 +613,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
          }
       }
       //select pi0 from alternative 2-gamma
-      if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut")){
+      if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut")){
          Int_t iCombination2 = 5-iCombination;
          FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.16",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
          cutString += Form(",rejectCombination%d",iCombination2);
@@ -556,6 +632,12 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
          cutString += Form(",2DPiAC%d",iCombination);
          cutString += Form(",2DEtaAC%d",iCombination);
          cutString += Form(",DeltaCut%d",5-iCombination);
+      }
+      if (tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut")){
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+         cutString += Form(",DeltaCut%d",5-iCombination);
+         cutString += Form(",OmegaMomentumCut%d",iCombination);
       }
       cutString += ")";
       if (isSidebandSub && tag==TString("etaPrimeSSB")) {
@@ -631,7 +713,10 @@ void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberO
    delete c;
 }
 
-void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE, Bool_t isLMACut = kFALSE, Bool_t is2DEtaPi0Cut = kFALSE, Bool_t isSidebandSub = kFALSE, Bool_t isIncludeMC = kFALSE, TString fileNameMC = "", TString fileNameMCThrown = "", TString mcThrownCutName = ""){
+void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag,
+                     Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE, Bool_t isLMACut = kFALSE, Bool_t is2DEtaPi0Cut = kFALSE, Bool_t isDeltaCut, Bool_t isOmegaMomentumCut = kFALSE,
+                     Bool_t isSidebandSub = kFALSE, Bool_t isIncludeMC = kFALSE, TString fileNameMC = "", TString fileNameMCThrown = "", TString mcThrownCutName = "")
+{
    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
    TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
    TCanvas *c = new TCanvas("c","c",800,600);
@@ -679,6 +764,12 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
       if (is2DEtaPi0Cut) {
          cutString += Form(",2DEtaAC%d",iCombination);
          cutString += Form(",2DPiAC%d",iCombination);
+      }
+      if (isDeltaCut) {
+         cutString += Form(",DeltaCut%d",5-iCombination);
+      }
+      if (isOmegaMomentumCut) {
+         cutString += Form(",OmegaMomentumCut%d",iCombination);
       }
       cutString += ")";
       if (isEtaPrimeSelect && isSidebandSub) {
@@ -1021,6 +1112,25 @@ void DefineDeltaCuts(){
    }
 }
 
+void DefineOmegaMomentumCuts(){
+   Double_t omegaMomentum = 7.6;
+   Double_t omegaMomentumWindow = 0.8;
+   Double_t omegaMass = 0.78265;
+   Double_t omegaMassWindow = 0.05;
+   Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   for (Int_t iCombination=0;iCombination<6;iCombination++){
+      Int_t Pi0Index = 5-iCombination;
+      TString CutString;
+      for (Int_t iExtraPhoton=0;iExtraPhoton<2;iExtraPhoton++){
+         CutString += Form("!(MASS(%d,%d,%d)>%f&&MASS(%d,%d,%d)<%f",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaMass-omegaMassWindow,vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaMass+omegaMassWindow); 
+         CutString += Form("&&MOMENTUM(%d,%d,%d)>%f&&MOMENTUM(%d,%d,%d)<%f)",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaMomentum-omegaMomentumWindow,vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaMomentum+omegaMomentumWindow);
+         if (!iExtraPhoton) CutString += "&&";
+      }
+      cout << "CutString omega momentum " << iCombination << " = " << CutString << endl;
+      FSCut::defineCut(Form("OmegaMomentumCut%d",iCombination),CutString.Data());
+   }
+}
+
 // Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
 //                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
 //                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
@@ -1100,6 +1210,35 @@ Double_t pi0Momentum3GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_
    Double_t pi0Momentum = p3_AB.Mag();
    return pi0Momentum;
 
+}
+
+Double_t cosTheta2G2G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
+                     Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
+                     Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
+                     Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD){
+   
+   TLorentzVector PA(PxPA,PyPA,PzPA,EnPA);
+   TLorentzVector PB(PxPB,PyPB,PzPB,EnPB);
+   TLorentzVector PC(PxPC,PyPC,PzPC,EnPC);
+   TLorentzVector PD(PxPD,PyPD,PzPD,EnPD);
+
+   TLorentzVector p4_ABCD = PA + PB + PC + PD;
+
+   // get the boost vector
+
+   TVector3 boost = p4_ABCD.BoostVector();
+   // boost the 4-vectors
+   PA.Boost(-boost);
+   PB.Boost(-boost);
+   PC.Boost(-boost);
+   PD.Boost(-boost);
+
+   TLorentzVector boosted_p4_AB = PA + PB;
+   TLorentzVector boosted_p4_CD = PC + PD;
+
+   //angle between p3_AB and p3_CD
+   Double_t cosTheta = boosted_p4_AB.Vect().Dot(boosted_p4_CD.Vect())/(boosted_p4_AB.Vect().Mag()*boosted_p4_CD.Vect().Mag());
+   return cosTheta;
 }
 
 // Explore data
