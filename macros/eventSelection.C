@@ -29,6 +29,8 @@ void Plot2DHistWithCuts(TString fileName, TString treeName, TString varNameX, TS
 TH2F* Get2DHistWithCuts(TString fileName, TString treeName, TString varNameX, TString varNameY, TString cutName, TString tag, 
                         Int_t numberOfXBin, Double_t xmin, Double_t xmax, TString xTitle, Int_t numberOfYBin, Double_t ymin, Double_t ymax, TString yTitle, TString title,
                         Bool_t isSidebandSub, Int_t etaPrimeSelectNumber);
+void PlotOmegaMassWithCuts(TString fileName,TString treeName,Int_t numberOfBin,Double_t xmin,Double_t xmax, TString cutName, TString tag, Bool_t isFit);
+
 void DefineGamma3Cuts();
 void DefinePi0SelectCuts();
 void DefineEtaPrimeSelectCuts();
@@ -627,11 +629,16 @@ void eventSelection(){
    // PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut_SSB",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kTRUE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
    // FSModeHistogram::dumpHistogramCache();
 
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
-   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
-   FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCutOmegaCosThetaCOMCut_etaPrime");
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCutOmegaCosThetaCOMCut_etaPrime");
    
+   FSModeHistogram::readHistogramCache();
+   PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","NoOmegaCut",kTRUE);
+   PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","OmegaMomentumCut",kTRUE);
+   PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","OmegaCosThetaCOMCut",kTRUE);
+   FSModeHistogram::dumpHistogramCache();
 
  }
 
@@ -668,7 +675,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
          }
       }
       //select pi0 from alternative 2-gamma
-      if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut")){
+      if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")) {
          Int_t iCombination2 = 5-iCombination;
          FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.16",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
          cutString += Form(",rejectCombination%d",iCombination2);
@@ -1209,6 +1216,114 @@ void DefineOmegaCosThetaCOMCuts(){
       cout << "CutString omega CosThetaCOM " << iCombination << " = " << CutString << endl;
       FSCut::defineCut(Form("OmegaCosThetaCOMCut%d",iCombination),CutString.Data());
    }
+}
+
+void PlotOmegaMassWithCuts(TString fileName,TString treeName,Int_t numberOfBin,Double_t xmin,Double_t xmax, TString cutName, TString tag, Bool_t isFit){
+   const Int_t NCombination = 6;
+   const Int_t NOmegaCombination = 2;
+   const Int_t NHist = NCombination*NOmegaCombination;
+   Double_t binWidth = (xmax-xmin)/numberOfBin;
+   TH1F *h[NHist];
+   TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
+   TCanvas *c = new TCanvas("c","c",1200,800);
+   c->Divide(4,3);
+   Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   Int_t iHist = 0;
+   for (Int_t iCombination=0;iCombination<6;iCombination++) {
+      Int_t Pi0Index = 5-iCombination;
+      for (Int_t iExtraPhoton=0;iExtraPhoton<2;iExtraPhoton++){
+         TString cutString = "CUT(";
+         cutString += cutName;
+         cutString += Form(",pi0Select%d",5-iCombination);
+         cutString += Form(",etaPrimeSelect%d",iCombination);
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+         cutString += Form(",DeltaCut%d",5-iCombination);
+         if (tag == TString("OmegaMomentumCut")) cutString += Form(",%s%d",tag.Data(),iCombination);
+         else if (tag == TString("OmegaCosThetaCOMCut")) cutString += Form(",%s%d",tag.Data(),iCombination);
+         cutString += ")";
+         cout << iHist+1 << ". " << Form("MASS(%d,%d,%d)",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton]) << endl;
+         cout << "   CutString = " << cutString << endl;
+         h[iHist] = FSModeHistogram::getTH1F(fileName,treeName,"",Form("MASS(%d,%d,%d)",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton]),binning,cutString);
+         h[iHist]->SetTitle(Form("#eta' #rightarrow #gamma_{%d}#gamma_{%d} && #pi^{0} #rightarrow #gamma_{%d}#gamma_{%d}",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1]));
+         h[iHist]->GetXaxis()->SetTitle(Form("m_{#gamma_{%d}#gamma_{%d}#gamma_{%d}} (GeV/c^{2})",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton]));
+         h[iHist]->GetYaxis()->SetTitle(Form("Counts/%.0f MeV/c^{2}",(xmax-xmin)*1000./numberOfBin));
+         //make plots look nicer
+         h[iHist]->SetLineColor(kBlack);
+         h[iHist]->SetLineWidth(2);
+         h[iHist]->SetMarkerStyle(20);
+         h[iHist]->SetMarkerSize(0.5);
+         h[iHist]->SetMarkerColor(kBlack);
+         h[iHist]->GetXaxis()->SetRangeUser(xmin,xmax);
+         h[iHist]->GetXaxis()->SetNdivisions(505);
+         h[iHist]->GetYaxis()->SetNdivisions(505);
+         h[iHist]->GetXaxis()->SetTitleSize(0.05);
+         h[iHist]->GetYaxis()->SetTitleSize(0.05);
+         h[iHist]->GetXaxis()->SetTitleOffset(1.0);
+         h[iHist]->GetYaxis()->SetTitleOffset(1.0);
+         h[iHist]->GetXaxis()->SetLabelSize(0.05);
+         h[iHist]->GetYaxis()->SetLabelSize(0.05);
+         h[iHist]->GetXaxis()->SetLabelOffset(0.01);
+         h[iHist]->GetYaxis()->SetLabelOffset(0.01);
+         h[iHist]->GetXaxis()->SetLabelFont(42);
+         h[iHist]->GetYaxis()->SetLabelFont(42);
+         h[iHist]->GetXaxis()->SetTitleFont(42);
+         h[iHist]->GetYaxis()->SetTitleFont(42);
+         h[iHist]->GetXaxis()->SetTickLength(0.03);
+         h[iHist]->GetYaxis()->SetTickLength(0.03);
+         c->cd(iHist+1);
+         h[iHist]->Draw();
+         if (isFit){
+            //fit the histogram with gaussian function and linear function
+            TF1 *f = new TF1("f","gaus(0)+pol1(3)",xmin,xmax);
+            Double_t omegaMass = 0.78265;
+            f->SetParameters(100,omegaMass,0.01,0,0);
+            h[iHist]->Fit("f","R");
+            Double_t mean = f->GetParameter(1);
+            Double_t sigma = TMath::Abs(f->GetParameter(2));
+            Double_t meanError = f->GetParError(1);
+            Double_t sigmaError = f->GetParError(2);
+            Double_t chi2 = f->GetChisquare();
+            Double_t ndf = f->GetNDF();
+            Double_t chi2ndf = chi2/ndf;
+            cout << "   Mean = " << mean << " +- " << meanError << endl;
+            cout << "   Sigma = " << sigma << " +- " << sigmaError << endl;
+            cout << "   Chi2 = " << chi2 << endl;
+            cout << "   NDF = " << ndf << endl;
+            cout << "   Chi2/NDF = " << chi2ndf << endl;
+            //draw the fit function
+            TF1 *fFit = new TF1("fFit","gaus(0)+pol1(3)",xmin,xmax);
+            fFit->SetParameters(f->GetParameters());
+            fFit->SetLineColor(kRed);
+            fFit->Draw("same");
+
+            //draw gaussian function and linear function separately
+            TF1 *fGaus = new TF1("fGaus","gaus(0)",xmin,xmax);
+            fGaus->SetParameters(f->GetParameter(0),f->GetParameter(1),f->GetParameter(2));
+            fGaus->SetLineStyle(2);
+            fGaus->SetLineWidth(1);
+            fGaus->SetLineColor(kGreen);
+            fGaus->Draw("same");
+
+            TF1 *fLinear = new TF1("fLinear","pol1(0)",xmin,xmax);
+            fLinear->SetParameters(f->GetParameter(3),f->GetParameter(4));
+            fLinear->SetLineStyle(2);
+            fLinear->SetLineWidth(1);
+            fLinear->SetLineColor(kBlue);
+            fLinear->Draw("same");
+
+            // calculate omega yield and write it on histogram
+            Double_t omegaYield = fGaus->Integral(mean-5*sigma,mean+5*sigma)/h[iHist]->GetBinWidth(1);
+            cout << "   Omega Yield = " << omegaYield << endl;
+            TLatex *latex = new TLatex();
+            latex->SetTextSize(0.04);
+            latex->DrawLatexNDC(0.2,0.8,Form("Yield = %.0f",omegaYield));
+
+         }
+         iHist++;
+      }
+   }
+   c->SaveAs(Form("OmegaMass_%s.pdf",tag.Data()));
 }
 
 
