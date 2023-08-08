@@ -37,8 +37,14 @@ void Define2DAlternativePi0Cuts();
 void Define2DAlternativeEtaCuts();
 void DefineDeltaCuts();
 void DefineOmegaMomentumCuts();
+void DefineOmegaCosThetaCOMCuts();
 
 Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
+                              Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
+                              Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
+                              Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD);
+
+Double_t cosTheta3GCOMFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
                               Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD);
@@ -133,6 +139,7 @@ void setup(){
    Define2DAlternativeEtaCuts();
    DefineDeltaCuts();
    DefineOmegaMomentumCuts();
+   DefineOmegaCosThetaCOMCuts();
 
    FSControl::DEBUG=0;
 
@@ -142,6 +149,12 @@ void setup(){
                                                 "PxP[J],PyP[J],PzP[J],EnP[J],"
                                                 "PxP[M],PyP[M],PzP[M],EnP[M],"
                                                 "PxP[N],PyP[N],PzP[N],EnP[N])");
+   FSTree::defineMacro("cosTheta3GCOMFrame", 4, "cosTheta3GCOMFrame("
+                                                "PxP[I],PyP[I],PzP[I],EnP[I],"
+                                                "PxP[J],PyP[J],PzP[J],EnP[J],"
+                                                "PxP[M],PyP[M],PzP[M],EnP[M],"
+                                                "PxP[N],PyP[N],PzP[N],EnP[N])");
+         
    FSTree::defineMacro("pi0Momentum3GFrame", 3, "pi0Momentum3GFrame("
                                                 "PxP[I],PyP[I],PzP[I],EnP[I],"
                                                 "PxP[J],PyP[J],PzP[J],EnP[J],"
@@ -155,6 +168,7 @@ void setup(){
    FSTree::showDefinedMacros();
 
 }
+
 
 void eventSelection(){
    setup();
@@ -341,14 +355,31 @@ void eventSelection(){
    //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 60,0.9,4.00, "p_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MASS(1,2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass12",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 30,0.9,4.00, "m_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+
+   // plot projection Y
+   // gStyle->SetOptStat(0);
+
+   // TH2F* h2_omegaBaryon_0 = Get2DHistWithCuts(FND, NT, "MASS(2,4,5)", "MASS(1,3)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass13",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 60,0.9,4.00, "m_{p#gamma3} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MASS(1,3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass345_mass13",
-   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 30,0.9,4.00, "m_{p#gamma3} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // TH2F* h2_omegaBaryon_1 = Get2DHistWithCuts(FND, NT, "MASS(3,4,5)", "MASS(1,2)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0", "mass345_mass12",
+   //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 60,0.9,4.00, "p_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
+   // TH1D* h1_omegaBaryon_0 = h2_omegaBaryon_0->ProjectionY("h1_omegaBaryon_0", 0, -1);
+   // h1_omegaBaryon_0->GetYaxis()->SetTitle("counts");
+   // h1_omegaBaryon_0->SetLineColor(kBlack);
+   // TH1D* h1_omegaBaryon_1 = h2_omegaBaryon_1->ProjectionY("h1_omegaBaryon_1", 0, -1);
+   // h1_omegaBaryon_1->GetYaxis()->SetTitle("counts");
+   // h1_omegaBaryon_1->SetLineColor(kBlack);
+
+   // TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+   // c1->cd();
+   // h1_omegaBaryon_0->Draw("hist");
+   // c1->SaveAs("h1_omegaBaryon_0.pdf");
+   // h1_omegaBaryon_1->Draw("hist");
+   // c1->SaveAs("h1_omegaBaryon_1.pdf");
    // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "MASS(1,2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0", "mass245_mass12_MC",
    //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 30,0.9,4.00, "m_{p#gamma2} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
    //                      kFALSE, 0);
@@ -471,21 +502,38 @@ void eventSelection(){
    //                      150,0.0,3.0, "m_{#gamma3#gamma4#gamma5} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_costheta3G4G",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,t_lt0.5", "mass245_costheta3G4G",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass245_costheta3G4G_MC",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "cosTheta3G4GFrame(4;5;2;3)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,t_lt0.5", "mass245_costheta3G4G_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,4#gamma})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_costheta3G4G",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,t_lt0.5", "mass345_costheta3G4G",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
    //                      kFALSE, 0);
 
-   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass345_costheta3G4G_MC",
-   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "cosTheta3G4GFrame(4;5;3;2)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,t_lt0.5", "mass345_costheta3G4G_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,4#gamma})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
    //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "cosTheta3GCOMFrame(4;5;2;GLUEXCMS)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaCosThetaCOMCut0,t_lt0.5", "mass245_costheta3GCOM",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,COM})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(2,4,5)", "cosTheta3GCOMFrame(4;5;2;GLUEXCMS)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaCosThetaCOMCut0,t_lt0.5", "mass245_costheta3GCOM_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma452,COM})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FND, NT, "MASS(3,4,5)", "cosTheta3GCOMFrame(4;5;3;GLUEXCMS)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaCosThetaCOMCut0,t_lt0.5", "mass345_costheta3GCOM",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,COM})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
+   //                      kFALSE, 0);
+
+   // Plot2DHistWithCuts(FNMC, NT, "MASS(3,4,5)", "cosTheta3GCOMFrame(4;5;3;GLUEXCMS)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,OmegaCosThetaCOMCut0,t_lt0.5", "mass345_costheta3GCOM_MC",
+   //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,-1.0,1.0, "cos(#theta_{#gamma453,COM})", "Selection: #eta' #rightarrow #gamma_{2}#gamma_{3} & #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & |t| < 0.5",
+   //                      kFALSE, 0);
+
 
    // Plot2DHistWithCuts(FND, NT, "MASS(2,4,5)", "pi0Momentum3GFrame(4;5;2)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5,Gamma3Cut2", "mass245_Pi0Momentum3GFrame",
    //                      150,0.0,3.0, "m_{#gamma2#gamma4#gamma5} (GeV)", 100,0.0,1.0, "p_{#pi^{0}}^{3#gamma}", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
@@ -529,6 +577,7 @@ void eventSelection(){
    // Plot2DHistWithCuts(FNMC, NT, "MASS(2,1)", "MOMENTUM(3,4,5)", "allBase,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "BaryonMass_momentum345_MC",
    //                      100,0.0,4.0, "m_{#gamma2p} (GeV)", 100,0.0,10.00, "p_{#gamma3#gamma4#gamma5} (GeV)", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5} & #eta' #rightarrow #gamma_{2}#gamma_{3}",
    //                      kFALSE, 0);
+
 
    // Plot2DHistWithCuts(FND, NT, "MASS(2,3)", "cosTheta2G2G4GFrame(2;3;4;5)", "allBase,pi0Select5,2DPiAC0,2DEtaAC0,DeltaCut5", "mass23_costheta2GPi04GFrame",
    //                      100,0.9,1.0, "m_{#gamma2#gamma3} (GeV)", 100,-1.0,-0.9999, "cos(#theta_{#pi^{0}2#gamma})", "Selection: #pi^{0} #rightarrow #gamma_{4}#gamma_{5}",
@@ -574,9 +623,15 @@ void eventSelection(){
    // FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCutOmegaMomentumCut_etaPrime");
 
    // FSModeHistogram::readHistogramCache();
-   PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
-   PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut_SSB",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kTRUE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
+   // PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
+   // PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaMomentumCut_SSB",kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kTRUE,kTRUE,FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
    // FSModeHistogram::dumpHistogramCache();
+
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCutOmegaCosThetaCOMCut_etaPrime");
+   
 
  }
 
@@ -638,6 +693,12 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
          cutString += Form(",2DEtaAC%d",iCombination);
          cutString += Form(",DeltaCut%d",5-iCombination);
          cutString += Form(",OmegaMomentumCut%d",iCombination);
+      }
+      if (tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")){
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+         cutString += Form(",DeltaCut%d",5-iCombination);
+         cutString += Form(",OmegaCosThetaCOMCut%d",iCombination);
       }
       cutString += ")";
       if (isSidebandSub && tag==TString("etaPrimeSSB")) {
@@ -1131,6 +1192,26 @@ void DefineOmegaMomentumCuts(){
    }
 }
 
+void DefineOmegaCosThetaCOMCuts(){
+   Double_t omegaCosThetaCOM = 0.95;
+   Double_t omegaCosThetaCOMWindow = 0.05;
+   Double_t omegaMass = 0.78265;
+   Double_t omegaMassWindow = 0.05;
+   Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   for (Int_t iCombination=0;iCombination<6;iCombination++){
+      Int_t Pi0Index = 5-iCombination;
+      TString CutString;
+      for (Int_t iExtraPhoton=0;iExtraPhoton<2;iExtraPhoton++){
+         CutString += Form("!(MASS(%d,%d,%d)>%f&&MASS(%d,%d,%d)<%f",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaMass-omegaMassWindow,vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaMass+omegaMassWindow); 
+         CutString += Form("&&cosTheta3GCOMFrame(%d;%d;%d;GLUEXCMS)>%f&&cosTheta3GCOMFrame(%d;%d;%d;GLUEXCMS)<%f)",vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaCosThetaCOM-omegaCosThetaCOMWindow,vectorIndexCombination[Pi0Index][0],vectorIndexCombination[Pi0Index][1],vectorIndexCombination[iCombination][iExtraPhoton],omegaCosThetaCOM+omegaCosThetaCOMWindow);
+         if (!iExtraPhoton) CutString += "&&";
+      }
+      cout << "CutString omega CosThetaCOM " << iCombination << " = " << CutString << endl;
+      FSCut::defineCut(Form("OmegaCosThetaCOMCut%d",iCombination),CutString.Data());
+   }
+}
+
+
 // Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
 //                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
 //                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
@@ -1185,6 +1266,32 @@ Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t
    TVector3 p3_ABCD = p3_ABC + PD.Vect();
    //get the angle between p3_AB and p3_ABC
    Double_t cosTheta = p3_ABCD.Dot(p3_ABC)/(p3_ABCD.Mag()*p3_ABC.Mag());
+   return cosTheta;
+
+}
+
+Double_t cosTheta3GCOMFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
+                              Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
+                              Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
+                              Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD){
+   
+   //gamma A,B,C are from omega, gamma D is total four momenta to get COM frame
+   TLorentzVector PA(PxPA,PyPA,PzPA,EnPA);
+   TLorentzVector PB(PxPB,PyPB,PzPB,EnPB);
+   TLorentzVector PC(PxPC,PyPC,PzPC,EnPC);
+   TLorentzVector PD(PxPD,PyPD,PzPD,EnPD);
+   
+   // get the boost vector
+   TVector3 boost = PD.BoostVector();
+   // boost the 4-vectors
+   PA.Boost(-boost);
+   PB.Boost(-boost);
+   PC.Boost(-boost);
+   
+   TVector3 p3_ABC = PA.Vect() + PB.Vect() + PC.Vect();
+   
+   Double_t cosTheta = p3_ABC.CosTheta();
+   // cout << cosTheta << endl;
    return cosTheta;
 
 }
