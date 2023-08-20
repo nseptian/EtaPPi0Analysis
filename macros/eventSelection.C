@@ -3,6 +3,7 @@
 TString FND("/d/grid17/sdobbs/gluex_data/EtapPi0_4gamma/skimmed/tree_pi0eta__B4_M17_M7_FLAT_PRESKIM_*.root");
 TString FNMC("/d/grid17/sdobbs/gluex_data/EtapPi0_4gamma/skimmed/tree_pi0eta__B4_M17_M7_FLAT_MC_PRESKIM*.root");
 TString FNMCGen("/d/grid17/septian/EtaPPi0_4Gamma/2018S/MCThrown_flat_FSRoot.root");
+TString FNMCBGGEN("/d/grid17/septian/tree_gggg__B4_bggen_FSRootFlat.root");
 
 TString NT("ntFSGlueX_MODECODE");
 
@@ -13,6 +14,7 @@ void chi2Ranking(){
 }
 
 void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isLMACut, Bool_t isSidebandSub);
+void PlotMass2GammaCombinationBGGen(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isLMACut, Bool_t isSidebandSub);
 void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isSidebandSub);
 void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag,
                      Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect, Bool_t isLMACut, Bool_t is2DEtaPi0Cut, Bool_t isDeltaCut,Bool_t isOmegaMomentumCut,
@@ -62,7 +64,6 @@ Double_t cosTheta2G2G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double
 
 void setup(){
    if (FSModeCollection::modeVector().size() != 0) return;
-   FSHistogram::readHistogramCache();
    FSModeCollection::addModeInfo("100_4000000")->addCategory("m100_4000000");
    FSModeCollection::display();
 
@@ -72,7 +73,7 @@ void setup(){
    // format defineCut("name","BranchName =<> value")
    // unused energy cut
    FSCut::defineCut("unusedE","EnUnusedSh<0.1");
-   // unused track cut
+   // unused track cuts
    FSCut::defineCut("unusedTracks","NumUnusedTracks<1");
    // z vertex cut (liquid hydrogen target)
    FSCut::defineCut("zProton","ProdVz>51&&ProdVz<78");
@@ -110,6 +111,7 @@ void setup(){
    FSTree::addFriendTree("Chi2Rank");
 
    FSCut::defineCut("allBase","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank1,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
+   FSCut::defineCut("allBaseBGGen","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseChi2Rank2","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank2,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseChi2Rank3","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank3,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseChi2Rank4","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank4,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
@@ -634,11 +636,52 @@ void eventSelection(){
    // PlotMass2GammaCombination(FND,NT,40,0.85,1.05,"allBase","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
    // FSModeHistogram::dumpHistogramCache("histograms/2DPiEtaACDeltaCutOmegaCosThetaCOMCut_etaPrime");
    
-   FSModeHistogram::readHistogramCache();
-   PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","NoOmegaCut",kTRUE);
-   PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","OmegaMomentumCut",kTRUE);
-   PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","OmegaCosThetaCOMCut",kTRUE);
-   FSModeHistogram::dumpHistogramCache();
+   // FSModeHistogram::readHistogramCache();
+   // PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","NoOmegaCut",kTRUE);
+   // PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","OmegaMomentumCut",kTRUE);
+   // PlotOmegaMassWithCuts(FND,NT,50,0.6,0.9,"allBase","OmegaCosThetaCOMCut",kTRUE);
+   // FSModeHistogram::dumpHistogramCache();
+
+   //explore BGGen
+   
+   // PlotMass2GammaCombination(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombination(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+
+   // TCanvas *c = new TCanvas("c","c",800,600);
+   // for (Int_t i=0;i<6;i++) {
+   //    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   //    FSModeHistogram::drawMCComponents(FNMCBGGEN,NT,"m100_4000000",Form("MASS(%d,%d)",vectorIndexCombination[i][0],vectorIndexCombination[i][1]),"(40,0.85,1.05)",Form("CUT(allBaseBGGen,etaPrimeSelect%d,pi0Select%d,2DPiAC%d,2DEtaAC%d)",i,5-i,i,i),1.0,c,true);
+   //    c->SaveAs(Form("massEtaPrimeSelect_2DPiAC_2DEtaAC_%d.pdf",i));
+   // }
+   // for (Int_t i=0;i<6;i++) {
+   //    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   //    FSModeHistogram::drawMCComponents(FNMCBGGEN,NT,"m100_4000000",Form("MASS(%d,%d)",vectorIndexCombination[i][0],vectorIndexCombination[i][1]),"(40,0.85,1.05)",Form("CUT(allBaseBGGen,etaPrimeSelect%d,pi0Select%d,2DPiAC%d,2DEtaAC%d,DeltaCut%d)",i,5-i,i,i,5-i),1.0,c,true);
+   //    c->SaveAs(Form("massEtaPrimeSelect_2DPiAC_2DEtaAC_DeltaCut_%d.pdf",i));
+   // }
+   // for (Int_t i=0;i<6;i++) {
+   //    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   //    FSModeHistogram::drawMCComponents(FNMCBGGEN,NT,"m100_4000000",Form("MASS(%d,%d)",vectorIndexCombination[i][0],vectorIndexCombination[i][1]),"(40,0.85,1.05)",Form("CUT(allBaseBGGen,etaPrimeSelect%d,pi0Select%d,2DPiAC%d,2DEtaAC%d,DeltaCut%d,OmegaCosThetaCOMCut%d)",i,5-i,i,i,5-i,i),1.0,c,true);
+   //    c->SaveAs(Form("massEtaPrimeSelect_2DPiAC_2DEtaAC_DeltaCut_OmegaCut_%d.pdf",i));
+   // }
+
+   // vector<TString> vMCCompBGGen = FSModeHistogram::getMCComponents(FNMCBGGEN,NT,"m100_4000000","MASS(2,3)","(40,0.85,1.05)","CUT(allBaseBGGen,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0)",1.0);
+   // for (Int_t i=0;i<vMCCompBGGen.size();i++) {
+   //    cout << FSModeHistogram::getMCComponentCut(vMCCompBGGen[i]) << endl;
+   // }
+
+   // auto vMCCompBGGen = FSModeHistogram::getMCComponentsAndSizes(FNMCBGGEN,NT,"m100_4000000","MASS(2,3)","(40,0.85,1.05)","CUT(allBaseBGGen,etaPrimeSelect0,pi0Select5,2DPiAC0,2DEtaAC0)",1.0);
+   // for (auto it = vMCCompBGGen.begin(); it != vMCCompBGGen.end(); it++) {
+   //    cout << it->first << " " << it->second << endl;
+   // }
+
+   // FSModeHistogram::readHistogramCache();
+   // PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","",kFALSE,kFALSE,kFALSE,kFALSE);
+   PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
+   PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // FSModeHistogram::dumpHistogramCache();
 
  }
 
@@ -732,7 +775,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
       }
    }
    c->SaveAs(Form("Mass2Combination_%s_%s.pdf",cutName.Data(),tag.Data()));
-   if (tag==TString("etaPrime") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC")){
+   if (tag==TString("etaPrime") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")){
       c->Clear();
       c->Divide(1,1);
       h1GammaGammaMass->SetTitle("Sum of combination of #gamma#gamma invariant mass");
@@ -742,6 +785,200 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
       h1GammaGammaMass->Draw();
       c->SaveAs(Form("Mass2Combination_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
    }
+   delete c;
+}
+
+void PlotMass2GammaCombinationBGGen(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isLMACut = kFALSE, Bool_t isSidebandSub = kFALSE){
+   Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
+   TH1F *h1GammaGammaMass;
+   TCanvas *c = new TCanvas("c","c",800,600);
+   c->Divide(3,2);
+   if (isGamma3Cut) {
+      Int_t vectorIndexCombination3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
+      for (Int_t iCombination3 = 0;iCombination3 < 4; iCombination3++){
+         FSCut::defineCut(Form("Gamma3Cut%d",iCombination3),GetCutStringMass3GammaCombination(vectorIndexCombination3[iCombination3][0],vectorIndexCombination3[iCombination3][1],vectorIndexCombination3[iCombination3][2]).Data());
+      }
+   }
+   if (isPi0Cut3) {
+      Int_t vectorIndexCombination3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
+      for (Int_t iCombination3 = 0;iCombination3 < 4; iCombination3++){
+         FSCut::defineCut(Form("pi0Cut%d",iCombination3),GetPi0CutStringMass3Combination(vectorIndexCombination3[iCombination3][0],vectorIndexCombination3[iCombination3][1],vectorIndexCombination3[iCombination3][2]).Data());
+      }
+   }
+
+   vector<pair<TString,float>> v_MCComponentSize[6];
+   vector<TH1F*> v_hMCComponent[6];
+   vector<pair<TString,float>> v_MCComponentSizeTotalCombination;
+   vector<TH1F*> v_hMCComponentTotalCombination;
+
+   for (Int_t iCombination = 0; iCombination < 6; iCombination++){
+      c->cd(iCombination+1);
+      TString cutString = "CUT(";
+      cutString += cutName;
+      if (isGamma3Cut) {
+         for (Int_t iCombination3 = 0;iCombination3 < 4; iCombination3++){
+            cutString += Form(",Gamma3Cut%d",iCombination3);
+         }
+      }
+      if (isPi0Cut3) {
+         for (Int_t iCombination3 = 0;iCombination3 < 4; iCombination3++){
+            cutString += Form(",pi0Cut%d",iCombination3);
+         }
+      }
+      //select pi0 from alternative 2-gamma
+      if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")) {
+         Int_t iCombination2 = 5-iCombination;
+         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.16",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
+         cutString += Form(",rejectCombination%d",iCombination2);
+      }
+      if (isLMACut) {
+         cutString += Form(",LMAC%d",iCombination);
+      }
+      if (tag==TString("etaPrime2DPiAC")) {
+         cutString += Form(",2DPiAC%d",iCombination);
+      }
+      if (tag==TString("etaPrime2DPiEtaAC")) {
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+      }
+      if (tag==TString("etaPrime2DPiEtaACDeltaCut")) {
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+         cutString += Form(",DeltaCut%d",5-iCombination);
+      }
+      if (tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut")){
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+         cutString += Form(",DeltaCut%d",5-iCombination);
+         cutString += Form(",OmegaMomentumCut%d",iCombination);
+      }
+      if (tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")){
+         cutString += Form(",2DPiAC%d",iCombination);
+         cutString += Form(",2DEtaAC%d",iCombination);
+         cutString += Form(",DeltaCut%d",5-iCombination);
+         cutString += Form(",OmegaCosThetaCOMCut%d",iCombination);
+      }
+      cutString += ")";
+      if (isSidebandSub && tag==TString("etaPrimeSSB")) {
+         cutString += "&&";
+         cutString += Form("CUTSUB(etaPrimeSelect%d)",iCombination);
+      }
+      //get stacked histograms with MC components and draw it on c
+      TH1F *h = FSModeHistogram::drawMCComponents(fileName,treeName,"",Form("MASS(%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1]),binning,cutString,1.0,c,true);
+      
+      //get MC components and sizes and save it on a vector
+      v_MCComponentSize[iCombination] = FSModeHistogram::getMCComponentsAndSizes(fileName,treeName,"",Form("MASS(%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1]),binning,cutString);
+      // cout << iCombination << " " << v_MCComponentSize[iCombination].size() << endl;
+
+      //get MC components histogram and save it on a vector
+      v_hMCComponent[iCombination] = FSModeHistogram::getMCComponentsTH1F(fileName,treeName,"",Form("MASS(%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1]),binning,cutString);
+
+      if (iCombination==0) h1GammaGammaMass = (TH1F*)h->Clone();
+      else h1GammaGammaMass->Add(h);
+      h->SetTitle(Form("Mass(%d,%d) %s",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],cutName.Data()));
+      h->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1]));
+      h->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+   }
+   
+   if (isGamma3Cut) {
+      for (Int_t iCombination3 = 0;iCombination3 < 4; iCombination3++){
+         cutName += Form(",Gamma3Cut%d",iCombination3);
+      }
+   }
+   if (isPi0Cut3) {
+      for (Int_t iCombination3 = 0;iCombination3 < 4; iCombination3++){
+         cutName += Form(",pi0Cut%d",iCombination3);
+      }
+   }
+   c->SaveAs(Form("Mass2Combination_BGGen_%s_%s.pdf",cutName.Data(),tag.Data()));
+
+   //sum up MC components and sizes based on the component code
+   vector<TString> vStringMCComponentCode;
+   vector<TH1F*> vTH1FMCComponentCode;
+   vector<float> vNEventMCComponentCode;
+   vector<int> vIndexMCComponentCode;
+
+   cout << "===================Summing up MC components from all combination===================" << endl;
+   for (Int_t iCombination=0;iCombination<6;iCombination++){
+      cout << "Combination = " << iCombination+1 << endl;
+      for (Int_t iMCComp=0;iMCComp<v_MCComponentSize[iCombination].size();iMCComp++) {
+         // cout << iCombination << " " << v_MCComponentSize[iCombination][iMCComp].first << " " << v_MCComponentSize[iCombination][iMCComp].second << endl;
+         if (iCombination==0) {
+            cout << "Push back:" << " MCCode(" << v_MCComponentSize[iCombination][iMCComp].first << ") " << "NEvent(" << v_MCComponentSize[iCombination][iMCComp].second*v_hMCComponent[iCombination][iMCComp]->Integral() << ")" << endl;
+            vStringMCComponentCode.push_back(v_MCComponentSize[iCombination][iMCComp].first);
+            vNEventMCComponentCode.push_back(v_MCComponentSize[iCombination][iMCComp].second*v_hMCComponent[iCombination][iMCComp]->Integral());
+            vTH1FMCComponentCode.push_back(v_hMCComponent[iCombination][iMCComp]);
+         }
+         else{
+            //check if the component code is already in the vector
+            const int nMCCompCode = vStringMCComponentCode.size();
+            cout << "Checking if the component code is already in the vector..." << endl;
+            for (Int_t iMCCompCode=0;iMCCompCode<nMCCompCode;iMCCompCode++) {
+               cout << iMCCompCode << " Comparing:" << vStringMCComponentCode[iMCCompCode] << ":" << v_MCComponentSize[iCombination][iMCComp].first << endl;
+               if (vStringMCComponentCode[iMCCompCode]==v_MCComponentSize[iCombination][iMCComp].first) {
+                  cout << "Found, adding:" << " MCCode(" << v_MCComponentSize[iCombination][iMCComp].first << ") " << "NEvent(" << v_MCComponentSize[iCombination][iMCComp].second*v_hMCComponent[iCombination][iMCComp]->Integral() << ")" << endl;
+                  vNEventMCComponentCode[iMCCompCode] += v_MCComponentSize[iCombination][iMCComp].second*v_hMCComponent[iCombination][iMCComp]->Integral();
+                  vTH1FMCComponentCode[iMCCompCode]->Add(v_hMCComponent[iCombination][iMCComp]);
+                  break;
+               }
+               if (iMCCompCode==nMCCompCode-1) {
+                  cout << "Not found, push back:" << " MCCode(" << v_MCComponentSize[iCombination][iMCComp].first << ") " << "NEvent(" << v_MCComponentSize[iCombination][iMCComp].second*v_hMCComponent[iCombination][iMCComp]->Integral() << ")" << endl;
+                  vStringMCComponentCode.push_back(v_MCComponentSize[iCombination][iMCComp].first);
+                  vNEventMCComponentCode.push_back(v_MCComponentSize[iCombination][iMCComp].second*v_hMCComponent[iCombination][iMCComp]->Integral());
+                  vTH1FMCComponentCode.push_back(v_hMCComponent[iCombination][iMCComp]);
+               }
+            }
+         }
+      }
+   }
+
+   //Print out the MC components and sizes after sum up
+   cout << endl << "===================MC components after summing up===================" << endl;
+   for (Int_t iMCCompCode=0;iMCCompCode<vStringMCComponentCode.size();iMCCompCode++) {
+      cout << iMCCompCode << " " << FSModeHistogram::formatMCComponent(vStringMCComponentCode[iMCCompCode],vNEventMCComponentCode[iMCCompCode]/vTH1FMCComponentCode[iMCCompCode]->Integral()) << endl;
+   }
+   
+   //draw th1f inside vector and save it on a pdf file
+   for (Int_t i=0;i<vTH1FMCComponentCode.size();i++){
+      c->Clear();
+      c->Divide(1,1);
+      vTH1FMCComponentCode[i]->SetTitle(Form("Total combination invariant mass (%s)",cutName.Data()));
+      vTH1FMCComponentCode[i]->SetXTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
+      vTH1FMCComponentCode[i]->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      vTH1FMCComponentCode[i]->Draw();
+      c->SaveAs(Form("Mass2Combination_BGGen_Total_%s_%s_%s.pdf",cutName.Data(),tag.Data(),vStringMCComponentCode[i].Data()));
+   }
+
+   // draw stacked histograms with MC components
+   c->Clear();
+   THStack *hs = new THStack("hs","hs");
+   TLegend *legend = new TLegend(0.7,0.5,1.0,1.0);
+   cout << endl << "Stacking histograms..." << endl;
+   for (Int_t iMCCompCode=vStringMCComponentCode.size()-1;iMCCompCode>=0;iMCCompCode--) {
+      TH1F *hdraw = vTH1FMCComponentCode[iMCCompCode];
+      if (iMCCompCode!=0) hdraw->SetFillColor(iMCCompCode+1);
+      hdraw->SetLineColor(iMCCompCode+1);
+      hs->Add(hdraw,"hist");
+      cout << iMCCompCode << " " << FSModeHistogram::formatMCComponent(vStringMCComponentCode[iMCCompCode],vNEventMCComponentCode[iMCCompCode]/vTH1FMCComponentCode[iMCCompCode]->Integral()) << endl;
+      TString legendString(FSModeHistogram::formatMCComponent(vStringMCComponentCode[iMCCompCode],vNEventMCComponentCode[iMCCompCode]/vTH1FMCComponentCode[iMCCompCode]->Integral()));
+      legendString = FSModeString::rootSymbols(legendString);
+      legend->AddEntry(hdraw,legendString.Data(),"f");
+   }
+   h1GammaGammaMass->Draw();
+   if (/*(vTH1FMCComponentCode.size()!=0) && */(tag==TString("etaPrime") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut"))){
+      // hs->SetTitle("Sum of combination of #gamma#gamma invariant mass");
+      // hs->GetXaxis()->SetTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
+      // hs->GetYaxis()->SetTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+      // hs->GetYaxis()->SetRangeUser(0,1.2*hs->GetMaximum());
+      hs->Draw("same");
+      legend->Draw("same");
+      h1GammaGammaMass->Draw("same");
+      c->RedrawAxis();
+      c->SaveAs(Form("Mass2Combination_Total_BGGen_%s_%s.pdf",cutName.Data(),tag.Data()));
+   }
+   
+   
    delete c;
 }
 
@@ -1326,36 +1563,6 @@ void PlotOmegaMassWithCuts(TString fileName,TString treeName,Int_t numberOfBin,D
    c->SaveAs(Form("OmegaMass_%s.pdf",tag.Data()));
 }
 
-
-// Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
-//                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
-//                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
-//                               Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD){
-      
-//    TLorentzVector PA(PxPA,PyPA,PzPA,EnPA);
-//    TLorentzVector PB(PxPB,PyPB,PzPB,EnPB);
-//    TLorentzVector PC(PxPC,PyPC,PzPC,EnPC);
-//    TLorentzVector PD(PxPD,PyPD,PzPD,EnPD);
-//    TLorentzVector p4_ABC = PA + PB + PC;
-//    TLorentzVector p4_ABCD = p4_ABC + PD;
-   
-//    // get the boost vector
-//    TVector3 boost = p4_ABCD.BoostVector();
-//    // boost the 4-vectors
-//    PA.Boost(-boost);
-//    PB.Boost(-boost);
-//    PC.Boost(-boost);
-//    PD.Boost(-boost);
-   
-//    TVector3 p3_AB = PA.Vect() + PB.Vect();
-//    TVector3 p3_ABC = p3_AB + PC.Vect();
-//    TVector3 p3_ABCD = p3_ABC + PD.Vect();
-//    //get the angle between p3_AB and p3_ABC
-//    Double_t cosTheta = p3_ABCD.Dot(p3_ABC)/(p3_ABCD.Mag()*p3_ABC.Mag());
-//    return cosTheta;
-
-// }
-
 Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
@@ -1462,6 +1669,35 @@ Double_t cosTheta2G2G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double
    Double_t cosTheta = boosted_p4_AB.Vect().Dot(boosted_p4_CD.Vect())/(boosted_p4_AB.Vect().Mag()*boosted_p4_CD.Vect().Mag());
    return cosTheta;
 }
+
+// Double_t cosTheta3G4GFrame(Double_t PxPA, Double_t PyPA, Double_t PzPA, Double_t EnPA,
+//                               Double_t PxPB, Double_t PyPB, Double_t PzPB, Double_t EnPB,
+//                               Double_t PxPC, Double_t PyPC, Double_t PzPC, Double_t EnPC,
+//                               Double_t PxPD, Double_t PyPD, Double_t PzPD, Double_t EnPD){
+      
+//    TLorentzVector PA(PxPA,PyPA,PzPA,EnPA);
+//    TLorentzVector PB(PxPB,PyPB,PzPB,EnPB);
+//    TLorentzVector PC(PxPC,PyPC,PzPC,EnPC);
+//    TLorentzVector PD(PxPD,PyPD,PzPD,EnPD);
+//    TLorentzVector p4_ABC = PA + PB + PC;
+//    TLorentzVector p4_ABCD = p4_ABC + PD;
+   
+//    // get the boost vector
+//    TVector3 boost = p4_ABCD.BoostVector();
+//    // boost the 4-vectors
+//    PA.Boost(-boost);
+//    PB.Boost(-boost);
+//    PC.Boost(-boost);
+//    PD.Boost(-boost);
+   
+//    TVector3 p3_AB = PA.Vect() + PB.Vect();
+//    TVector3 p3_ABC = p3_AB + PC.Vect();
+//    TVector3 p3_ABCD = p3_ABC + PD.Vect();
+//    //get the angle between p3_AB and p3_ABC
+//    Double_t cosTheta = p3_ABCD.Dot(p3_ABC)/(p3_ABCD.Mag()*p3_ABC.Mag());
+//    return cosTheta;
+
+// }
 
 // Explore data
 
