@@ -3,6 +3,10 @@
 TString FND("/d/grid17/sdobbs/gluex_data/EtapPi0_4gamma/skimmed/tree_pi0eta__B4_M17_M7_FLAT_PRESKIM_*.root");
 TString FNMC("/d/grid17/sdobbs/gluex_data/EtapPi0_4gamma/skimmed/tree_pi0eta__B4_M17_M7_FLAT_MC_PRESKIM*.root");
 TString FNMCGen("/d/grid17/septian/EtaPPi0_4Gamma/2018S/MCThrown_flat_FSRoot.root");
+
+//1M MC genr8 events
+// TString FNMC("/d/grid17/septian/EtaPPi0_4Gamma/2018S/tree_gggg__EtaPPi0_B4_genr8_FSRootFlat_1M.root");
+// TString FNMCGen("/d/grid17/septian/EtaPPi0_4Gamma/2018S/thrown_tree_gggg__EtaPPi0_B4_genr8_FSRootFlat_1M.root");
 TString FNMCBGGEN("/d/grid17/septian/tree_gggg__B4_bggen_FSRootFlat.root");
 
 TString NT("ntFSGlueX_MODECODE");
@@ -17,7 +21,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
 void PlotMass2GammaCombinationBGGen(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isLMACut, Bool_t isSidebandSub);
 void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isSidebandSub);
 void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag,
-                     Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect, Bool_t isLMACut, Bool_t is2DEtaPi0Cut, Bool_t isDeltaCut,Bool_t isOmegaMomentumCut,
+                     Bool_t isGamma3Cut, Bool_t isPi0Cut3, Bool_t isPi0Select, Bool_t isEtaPrimeSelect, Bool_t isLMACut, Bool_t is2DEtaPi0Cut, Bool_t isDeltaCut,Bool_t isOmegaMomentumCut, Bool_t isOmegaCosThetaCOMCut,
                      Bool_t isSidebandSub, Bool_t isIncludeMC = kFALSE, TString fileNameMC = "", TString fileNameMCThrown = "", TString mcThrownCutName = "");
 TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
 TString GetPi0CutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3);
@@ -130,6 +134,7 @@ void setup(){
    FSCut::defineCut("cet1418","OR(abs(-1*MASS2(GLUEXTARGET,-1)-1.6)<0.2)");    // 1.4 < t < 1.8
 
    FSCut::defineCut("t_lt1","abs(MASS2(GLUEXTARGET,-1))<1.0");    //|t| < 1.0
+   FSCut::defineCut("mct_lt1","abs(MCMASS2(GLUEXTARGET,-1))<1.0"); //|t| < 1.0 for MC thrown
    FSCut::defineCut("t_lt0.5","abs(MASS2(GLUEXTARGET,-1))<0.5");    //|t| < 0.5
    FSCut::defineCut("mct_lt0.5","abs(MCMASS2(GLUEXTARGET,-1))<0.5"); //|t| < 0.5 for MC thrown
    FSCut::defineCut("pg4g5_lt1.4","MASS(1,4,5)<1.4");
@@ -678,9 +683,18 @@ void eventSelection(){
 
    // FSModeHistogram::readHistogramCache();
    // PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","",kFALSE,kFALSE,kFALSE,kFALSE);
-   PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
-   PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
-   PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaAC",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombinationBGGen(FNMCBGGEN,NT,40,0.85,1.05,"allBaseBGGen","etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // FSModeHistogram::dumpHistogramCache();
+
+   // FSModeHistogram::readHistogramCache();
+   PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaCosThetaCOMCut",
+                  kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kFALSE,kFALSE,kTRUE,
+                  FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
+   PlotMass4Gamma(FND,NT,50,1.0,3.0,"allBase,t_lt0.5","2DEtaPi0ACDeltaCutOmegaCosThetaCOMCut_SSB",
+                  kFALSE,kFALSE,kTRUE,kTRUE,kFALSE,kTRUE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,
+                  FNMC,FNMCGen,"CUT(mcebeam,mct_lt0.5)");
    // FSModeHistogram::dumpHistogramCache();
 
  }
@@ -965,19 +979,20 @@ void PlotMass2GammaCombinationBGGen(TString fileName, TString treeName, Int_t nu
       legendString = FSModeString::rootSymbols(legendString);
       legend->AddEntry(hdraw,legendString.Data(),"f");
    }
+   c->Clear();
+   c->Divide(1,1);
+   h1GammaGammaMass->SetTitle("Sum of all combination");
+   h1GammaGammaMass->SetXTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
+   h1GammaGammaMass->SetYTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
+   h1GammaGammaMass->GetYaxis()->SetRangeUser(0,1.2*h1GammaGammaMass->GetMaximum());
    h1GammaGammaMass->Draw();
-   if (/*(vTH1FMCComponentCode.size()!=0) && */(tag==TString("etaPrime") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut"))){
-      // hs->SetTitle("Sum of combination of #gamma#gamma invariant mass");
-      // hs->GetXaxis()->SetTitle("m_{\\gamma\\gamma} [GeV/c^{2}]");
-      // hs->GetYaxis()->SetTitle(Form("Events / %0.2f MeV/c^{2}",(xmax-xmin)/numberOfBin*1000));
-      // hs->GetYaxis()->SetRangeUser(0,1.2*hs->GetMaximum());
+   if ((vTH1FMCComponentCode.size()!=0) && (tag==TString("etaPrime") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut"))){
       hs->Draw("same");
       legend->Draw("same");
       h1GammaGammaMass->Draw("same");
       c->RedrawAxis();
       c->SaveAs(Form("Mass2Combination_Total_BGGen_%s_%s.pdf",cutName.Data(),tag.Data()));
    }
-   
    
    delete c;
 }
@@ -1019,14 +1034,17 @@ void PlotMass3GammaCombination(TString fileName, TString treeName, Int_t numberO
 }
 
 void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag,
-                     Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE, Bool_t isLMACut = kFALSE, Bool_t is2DEtaPi0Cut = kFALSE, Bool_t isDeltaCut, Bool_t isOmegaMomentumCut = kFALSE,
+                     Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isPi0Select = kFALSE, Bool_t isEtaPrimeSelect = kFALSE, Bool_t isLMACut = kFALSE, Bool_t is2DEtaPi0Cut = kFALSE, Bool_t isDeltaCut = kFALSE, Bool_t isOmegaMomentumCut = kFALSE, Bool_t isOmegaCosThetaCOMCut = kFALSE,
                      Bool_t isSidebandSub = kFALSE, Bool_t isIncludeMC = kFALSE, TString fileNameMC = "", TString fileNameMCThrown = "", TString mcThrownCutName = "")
 {
    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
    TString binning = Form("(%d,%f,%f)",numberOfBin,xmin,xmax);
+   TString binningGJCosTheta = Form("(%d,%f,%f,%d,%f,%f)",numberOfBin,xmin,xmax,50,-1.0,1.0);
    TCanvas *c = new TCanvas("c","c",800,600);
    TH1F *h1_4GammaMass;
    TH1F *h1_4GammaMassMC;
+   TH2F *h2MC_m_CosThetaGJTotal;
+   
    c->Divide(3,2);
    if (isGamma3Cut) {
       Int_t vectorIndexCombination3[4][3] = {{2,3,4},{2,3,5},{2,4,5},{3,4,5}};
@@ -1076,6 +1094,9 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
       if (isOmegaMomentumCut) {
          cutString += Form(",OmegaMomentumCut%d",iCombination);
       }
+      if (isOmegaCosThetaCOMCut) {
+         cutString += Form(",OmegaCosThetaCOMCut%d",iCombination);
+      }
       cutString += ")";
       if (isEtaPrimeSelect && isSidebandSub) {
          cutString += "&&";
@@ -1090,11 +1111,18 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
       h->Draw();
       if (isIncludeMC) {
          TH1F* hMC = FSModeHistogram::getTH1F(fileNameMC,treeName,"",Form("MASS(%d,%d,%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]),binning,cutString);
+         TH2F* h2MC_m_CosThetaGJ = FSModeHistogram::getTH2F(fileNameMC,treeName,"",Form("GJCOSTHETA(%d,%d;%d,%d;B):MASS(%d,%d,%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1],vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]),binningGJCosTheta,cutString);
          hMC->SetLineColor(kRed);
          hMC->SetLineWidth(2);
          hMC->Draw("HIST SAME");
-         if (iCombination == 0) h1_4GammaMassMC = (TH1F*)hMC->Clone("h1_4GammaMassMC");
-         else h1_4GammaMassMC->Add(hMC);   
+         if (iCombination == 0) {
+            h1_4GammaMassMC = (TH1F*)hMC->Clone("h1_4GammaMassMC");
+            h2MC_m_CosThetaGJTotal = (TH2F*)h2MC_m_CosThetaGJ->Clone("h2MC_m_CosThetaGJTotal");
+         }
+         else {
+            h1_4GammaMassMC->Add(hMC);
+            h2MC_m_CosThetaGJTotal->Add(h2MC_m_CosThetaGJ);
+         }   
       }
       if (iCombination == 0) h1_4GammaMass = (TH1F*)h->Clone("h1_4GammaMass");
       else h1_4GammaMass->Add(h);
@@ -1149,6 +1177,16 @@ void PlotMass4Gamma(TString fileName, TString treeName, Int_t numberOfBin, Doubl
    }
    leg->Draw();
    c->SaveAs(Form("Mass4GammaTotal_%s_%s.pdf",cutName.Data(),tag.Data()));
+   if (isIncludeMC) {
+      TH2F* h2_m_CosThetaGJMCThrown = FSModeHistogram::getTH2F(fileNameMCThrown,NT,"","MCGJCOSTHETA(2,5;3,4;B):MCMASS(2,3,4,5)",binningGJCosTheta,mcThrownCutName);
+      TH2F* h2_m_CosThetaGJAcceptance = (TH2F*)h2MC_m_CosThetaGJTotal->Clone("h2_m_CosThetaGJMCAcceptance");
+      h2_m_CosThetaGJAcceptance->Divide(h2_m_CosThetaGJMCThrown);
+      h2_m_CosThetaGJAcceptance->SetTitle("Acceptance");
+      h2_m_CosThetaGJAcceptance->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
+      h2_m_CosThetaGJAcceptance->SetYTitle("cos#theta_{GJ}");
+      h2_m_CosThetaGJAcceptance->Draw("COLZ");
+      c->SaveAs(Form("Mass4Gamma_CosThetaGJ_Acceptance_%s_%s.pdf",cutName.Data(),tag.Data()));
+   }
    delete c;
 }
 
