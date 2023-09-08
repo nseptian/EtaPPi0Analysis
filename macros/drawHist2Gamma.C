@@ -1,11 +1,12 @@
-TString fileName = "histograms/2DAlternative3GammaCuts_etaPrime.cache.root";
-TString outputTag = "etaPrimeHist_2DAlternative3GammaCuts";
+TString fileName = "histograms/Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_etaPrime.cache.root";
+TString outputTag = "Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_etaPrime";
 
 const Int_t NCombinations = 6;
-const Int_t NCuts = 2;
+Int_t vectorIndexCombination[NCombinations][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+const Int_t NCuts = 3;
 const Int_t NHist = NCombinations*NCuts;
 const Bool_t isFitHist = kTRUE;
-const Int_t iHistToFit = 1;
+const Int_t iHistToFit = 2;
 
 void gluex_style();
 void drawHist2Gamma(){
@@ -20,7 +21,7 @@ void drawHist2Gamma(){
 	TString hname;
 	TH1F *h1[NHist];
 	TH1F *h1_total[NCuts];
-	TCanvas *c1 = new TCanvas("c1","c1",800,600);
+	TCanvas *c1 = new TCanvas("c1","c1",800,800);
 	c1->Divide(3,2);
 	Color_t markerColor=1;
 	Int_t totalCounter=0;
@@ -39,7 +40,34 @@ void drawHist2Gamma(){
 				
 				h1[i]->SetMarkerColor(markerColor);
 				h1[i]->SetLineColor(markerColor);
+				// h1[i]->GetYaxis()->SetRangeUser(0,1.1*h1[i]->GetMaximum());
+
 				h1[i]->Draw("SAME");
+
+				//draw box for pi0 region
+				// TBox *box = new TBox(0.11,0,0.16,h1[i]->GetMaximum());
+				// box->SetFillColor(4);
+				// box->SetFillStyle(3002);
+				// box->Draw();
+				
+				Int_t iCombinationDraw = 6-iCombination;
+				if (iCombination==0) iCombinationDraw = iCombination;
+
+				//draw line at eta prime mass
+				TLine *line = new TLine(0.957,0,0.957,h1[i]->GetMaximum());
+				line->SetLineColor(2);
+				line->SetLineStyle(2);
+				line->Draw();
+
+
+				// draw iCombination number for pi0
+				TLatex *tex = new TLatex();
+				tex->SetNDC();
+				tex->SetTextFont(42);
+				tex->SetTextSize(0.06);
+				tex->SetTextColor(1);
+				tex->SetTextAlign(12);
+				tex->DrawLatex(0.25,0.85,Form("Selection: #pi^{0} #rightarrow #gamma_{%d}#gamma_{%d}",vectorIndexCombination[iCombinationDraw][0],vectorIndexCombination[iCombinationDraw][1]));				
 				// cout << i+1 << endl;
 				// cout << iCombination << endl;
 				if(iCombination==0){
@@ -62,10 +90,11 @@ void drawHist2Gamma(){
 		h1_total[iColor]->Draw("SAME");
 	}
 	TLegend *leg = new TLegend(0.2,0.73,0.45,0.9);
-	leg->AddEntry(h1_total[0],"all Base + 2D alternative cuts","lep");
-	leg->AddEntry(h1_total[1],"+ 3#gamma cuts","lep");
-	// leg->AddEntry(h1_total[2],"+ 2D #pi^{0} #eta alternative cuts","lep");
-	// leg->AddEntry(h1_total[3],"+ 2D alternative cuts","lep");
+	leg->AddEntry(h1_total[0],"All previous cuts","lep");
+	// leg->AddEntry(h1_total[1],"+ Delta cuts","lep");
+	// leg->AddEntry(h1_total[2],"+ #omega cos(#theta_{CMS}) cuts","lep");
+	leg->AddEntry(h1_total[1],"+ low E photon rejection cuts","lep");
+	leg->AddEntry(h1_total[2],"+ #omega#pi^{0} rejection cuts","lep");
 	leg->Draw();
 	c1->SaveAs(Form("plots/%s_total.pdf",outputTag.Data()));
 	
@@ -78,69 +107,94 @@ void drawHist2Gamma(){
 	h1_total[iHistToFit]->SetLineColor(1);
 	c1->Clear();
 	h1_total[iHistToFit]->Draw();
-	TF1 *f1 = new TF1("f1","gaus(0)+pol2(3)",0.85,1.05);
-	f1->SetParameter(0,1);
-	f1->SetParameter(1,0.957);
-	f1->SetParameter(2,0.01);
-	f1->SetParameter(3,200);
-	f1->SetParameter(4,-10);
-	f1->SetParameter(5,0);
-	h1_total[iHistToFit]->Fit("f1","R");
-	f1->SetLineColor(4);
-	f1->SetLineStyle(2);
-	f1->Draw("SAME");
-	//draw the gaussian function from the fit separately from the background
-	TF1 *f2 = new TF1("f2","gaus(0)",0.85,1.05);
-	f2->SetParameter(0,f1->GetParameter(0));
-	f2->SetParameter(1,f1->GetParameter(1));
-	f2->SetParameter(2,f1->GetParameter(2));
-	f2->SetLineColor(2);
-	f2->SetLineStyle(2);
-	f2->Draw("SAME");
-	//draw the background from the fit separately from the gaussian function
-	TF1 *f3 = new TF1("f3","pol2(0)",0.85,1.05);
-	f3->SetParameter(0,f1->GetParameter(3));
-	f3->SetParameter(1,f1->GetParameter(4));
-	f3->SetParameter(2,f1->GetParameter(5));
-	f3->SetLineColor(3);
-	f3->SetLineStyle(2);
-	f3->Draw("SAME");
-	cout << "Chi2/NDF = " << f1->GetChisquare()/f1->GetNDF() << endl;
-	cout << "Prob = " << f1->GetProb() << endl;
-	cout << "Mean = " << f1->GetParameter(1) << endl;
-	cout << "Sigma = " << f1->GetParameter(2) << endl;
-	cout << "Mean error = " << f1->GetParError(1) << endl;
-	cout << "Sigma error = " << f1->GetParError(2) << endl;
-	// cout << "Mean pull = " << (f1->GetParameter(1)-0.957)/f1->GetParError(1) << endl;
-	// cout << "Sigma pull = " << (f1->GetParameter(2)-0.01)/f1->GetParError(2) << endl;
-	// cout << "Mean pull = " << (f1->GetParameter(1)-0.957)/f1->GetParError(1) << endl;
 	
-	// Calculate the integration of the gaussian function within 3 Sigma region from the fit
-	double gausIntegral = f2->Integral(f1->GetParameter(1)-(3*f1->GetParameter(2)),f1->GetParameter(1)+(3*f1->GetParameter(2)));
-	// Calculate the integration of the background within 3 Sigma region from the fit
-	double backgroundIntegral = f3->Integral(f1->GetParameter(1)-(3*f1->GetParameter(2)),f1->GetParameter(1)+(3*f1->GetParameter(2)));
+	if (isFitHist) {
+		
+		TF1 *f1 = new TF1("f1","gaus(0)+pol2(3)",0.85,1.05);
+		f1->SetParameter(0,1);
+		f1->SetParameter(1,0.957);
+		f1->SetParameter(2,0.01);
+		f1->SetParameter(3,600);
+		f1->SetParameter(4,-10);
+		f1->SetParameter(5,0);
+		h1_total[iHistToFit]->Fit("f1","R");
+		f1->SetLineColor(4);
+		f1->SetLineStyle(2);
+		f1->Draw("SAME");
+		//draw the gaussian function from the fit separately from the background
+		TF1 *f2 = new TF1("f2","gaus(0)",0.85,1.05);
+		f2->SetParameter(0,f1->GetParameter(0));
+		f2->SetParameter(1,f1->GetParameter(1));
+		f2->SetParameter(2,f1->GetParameter(2));
+		f2->SetLineColor(2);
+		f2->SetLineStyle(2);
+		f2->Draw("SAME");
+		//draw the background from the fit separately from the gaussian function
+		TF1 *f3 = new TF1("f3","pol2(0)",0.85,1.05);
+		f3->SetParameter(0,f1->GetParameter(3));
+		f3->SetParameter(1,f1->GetParameter(4));
+		f3->SetParameter(2,f1->GetParameter(5));
+		f3->SetLineColor(3);
+		f3->SetLineStyle(2);
+		f3->Draw("SAME");
+		cout << "Chi2/NDF = " << f1->GetChisquare()/f1->GetNDF() << endl;
+		cout << "Prob = " << f1->GetProb() << endl;
+		cout << "Mean = " << f1->GetParameter(1) << endl;
+		cout << "Sigma = " << f1->GetParameter(2) << endl;
+		cout << "Mean error = " << f1->GetParError(1) << endl;
+		cout << "Sigma error = " << f1->GetParError(2) << endl;
+		// cout << "Mean pull = " << (f1->GetParameter(1)-0.957)/f1->GetParError(1) << endl;
+		// cout << "Sigma pull = " << (f1->GetParameter(2)-0.01)/f1->GetParError(2) << endl;
+		// cout << "Mean pull = " << (f1->GetParameter(1)-0.957)/f1->GetParError(1) << endl;
 
-	// Calculate the signal and background yield per bin width
-	double signalYield = gausIntegral/(h1_total[0]->GetBinWidth(1));
-	double backgroundYield = backgroundIntegral/(h1_total[0]->GetBinWidth(1));
+		// Calculate the integration of the gaussian function within 3 Sigma region from the fit
+		double gausIntegral = f2->Integral(f1->GetParameter(1)-(3*f1->GetParameter(2)),f1->GetParameter(1)+(3*f1->GetParameter(2)));
+		// Calculate the integration of the background within 3 Sigma region from the fit
+		double backgroundIntegral = f3->Integral(f1->GetParameter(1)-(3*f1->GetParameter(2)),f1->GetParameter(1)+(3*f1->GetParameter(2)));
 
-	// Draw signal yield, background yield, signal to background ratio
-	TLatex *tex = new TLatex();
-	tex->SetNDC();
-	tex->SetTextFont(42);
-	tex->SetTextSize(0.04);
-	tex->SetTextColor(1);
-	tex->SetTextAlign(12);
-	tex->DrawLatex(0.25,0.6,Form("S (3#sigma) = %.0f",signalYield));
-	tex->DrawLatex(0.25,0.55,Form("B (3#sigma) = %.0f",backgroundYield));
-	tex->DrawLatex(0.25,0.5,Form("S/B = %.2f",signalYield/backgroundYield));
-	// Draw mean and sigma of the gaussian function
-	tex->DrawLatex(0.25,0.7,Form("#mu = %.3f #pm %.3f",f1->GetParameter(1),f1->GetParError(1)));
-	tex->DrawLatex(0.25,0.65,Form("#sigma = %.3f #pm %.3f",f1->GetParameter(2),f1->GetParError(2)));
+		// Calculate the signal and background yield per bin width
+		double signalYield = gausIntegral/(h1_total[0]->GetBinWidth(1));
+		double backgroundYield = backgroundIntegral/(h1_total[0]->GetBinWidth(1));
 
-	// tex->DrawLatex(0.2,0.65,Form("S/#sqrt{S+B} = %.2f",gausIntegral/sqrt(gausIntegral+backgroundIntegral)));
-	// tex->DrawLatex(0.2,0.6,Form("S/#sqrt{B} = %.2f",gausIntegral/sqrt(backgroundIntegral)));
-	
+		// Draw signal yield, background yield, signal to background ratio
+		TLatex *tex = new TLatex();
+		tex->SetNDC();
+		tex->SetTextFont(42);
+		tex->SetTextSize(0.04);
+		tex->SetTextColor(1);
+		tex->SetTextAlign(12);
+		tex->DrawLatex(0.25,0.4,Form("S (3#sigma) = %.0f",signalYield));
+		tex->DrawLatex(0.25,0.35,Form("B (3#sigma) = %.0f",backgroundYield));
+		tex->DrawLatex(0.25,0.3,Form("S/B = %.2f",signalYield/backgroundYield));
+		tex->DrawLatex(0.25,0.25,Form("S/#sqrt{S+B} = %.2f",gausIntegral/sqrt(gausIntegral+backgroundIntegral)));
+		// Draw mean and sigma of the gaussian function
+		tex->DrawLatex(0.25,0.5,Form("#mu = %.3f #pm %.3f",f1->GetParameter(1),f1->GetParError(1)));
+		tex->DrawLatex(0.25,0.45,Form("#sigma = %.3f #pm %.3f",f1->GetParameter(2),f1->GetParError(2)));
+		
+		// tex->DrawLatex(0.2,0.6,Form("S/#sqrt{B} = %.2f",gausIntegral/sqrt(backgroundIntegral)));
+
+		// draw box for signal region
+		Double_t etaPrimeMass = 0.956;
+   		Double_t etaSigma = 0.013;
+   		Double_t signalRegion[2] = {etaPrimeMass-(3*etaSigma),etaPrimeMass+(3*etaSigma)};
+   		Double_t leftSidebandRegion[2] = {etaPrimeMass-(7*etaSigma),etaPrimeMass-(4*etaSigma)};
+   		Double_t rightSidebandRegion[2] = {etaPrimeMass+(4*etaSigma),etaPrimeMass+(7*etaSigma)};
+		TBox *box = new TBox(signalRegion[0],0,signalRegion[1],h1_total[iHistToFit]->GetMaximum());
+		box->SetFillColor(4);
+		box->SetFillStyle(3002);
+		box->Draw();
+
+		// draw box for sidebands region
+		TBox *boxLSB = new TBox(leftSidebandRegion[0],0,leftSidebandRegion[1],h1_total[iHistToFit]->GetMaximum());
+		boxLSB->SetFillColor(2);
+		boxLSB->SetFillStyle(3002);
+		boxLSB->Draw();
+
+		TBox *boxRSB = new TBox(rightSidebandRegion[0],0,rightSidebandRegion[1],h1_total[iHistToFit]->GetMaximum());
+		boxRSB->SetFillColor(2);
+		boxRSB->SetFillStyle(3002);
+		boxRSB->Draw();
+	}
 	c1->SaveAs(Form("plots/%s_total_fit_allBase.pdf",outputTag.Data()));
 
 }
@@ -172,7 +226,7 @@ void gluex_style() {
 	// axis labels and settings
     gluex_style->SetStripDecimals(0);
  	gluex_style->SetLabelSize(0.045,"xyz"); // size of axis value font
- 	gluex_style->SetTitleSize(0.06,"xyz"); // size of axis title font
+ 	gluex_style->SetTitleSize(0.05,"xyz"); // size of axis title font
  	gluex_style->SetTitleFont(42,"xyz"); // font option
  	gluex_style->SetLabelFont(42,"xyz"); 
  	gluex_style->SetTitleOffset(1.5,"y"); 
@@ -180,7 +234,7 @@ void gluex_style() {
  	
 	// histogram settings
 	gluex_style->SetOptStat(0);     // no stats box by default
-	gluex_style->SetOptTitle(1);    // no title by default
+	gluex_style->SetOptTitle(0);    // no title by default
 	gluex_style->SetHistLineWidth(2); 
 	gluex_style->SetNdivisions(508,"xyz"); // some ticks were very bunched, lets reduce the number of divisions to label 
 	// gluex_style->SetOptFit(0111);
