@@ -1,12 +1,12 @@
-TString fileName = "histograms/Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_etaPrime.cache.root";
-TString outputTag = "Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_etaPrime";
+TString fileName = "histograms/Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime.cache.root";
+TString outputTag = "Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime";
 
 const Int_t NCombinations = 6;
 Int_t vectorIndexCombination[NCombinations][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
-const Int_t NCuts = 3;
+const Int_t NCuts = 2;
 const Int_t NHist = NCombinations*NCuts;
 const Bool_t isFitHist = kTRUE;
-const Int_t iHistToFit = 2;
+const Int_t iHistToFit = 1;
 
 void gluex_style();
 void drawHist2Gamma(){
@@ -93,8 +93,8 @@ void drawHist2Gamma(){
 	leg->AddEntry(h1_total[0],"All previous cuts","lep");
 	// leg->AddEntry(h1_total[1],"+ Delta cuts","lep");
 	// leg->AddEntry(h1_total[2],"+ #omega cos(#theta_{CMS}) cuts","lep");
-	leg->AddEntry(h1_total[1],"+ low E photon rejection cuts","lep");
-	leg->AddEntry(h1_total[2],"+ #omega#pi^{0} rejection cuts","lep");
+	leg->AddEntry(h1_total[1],"+ |t| < 1.0 GeV^{2}","lep");
+	// leg->AddEntry(h1_total[2],"+ #omega#pi^{0} rejection cuts","lep");
 	leg->Draw();
 	c1->SaveAs(Form("plots/%s_total.pdf",outputTag.Data()));
 	
@@ -153,8 +153,8 @@ void drawHist2Gamma(){
 		double backgroundIntegral = f3->Integral(f1->GetParameter(1)-(3*f1->GetParameter(2)),f1->GetParameter(1)+(3*f1->GetParameter(2)));
 
 		// Calculate the signal and background yield per bin width
-		double signalYield = gausIntegral/(h1_total[0]->GetBinWidth(1));
-		double backgroundYield = backgroundIntegral/(h1_total[0]->GetBinWidth(1));
+		double signalYield = TMath::Abs(gausIntegral/(h1_total[0]->GetBinWidth(1)));
+		double backgroundYield = TMath::Abs(backgroundIntegral/(h1_total[0]->GetBinWidth(1)));
 
 		// Draw signal yield, background yield, signal to background ratio
 		TLatex *tex = new TLatex();
@@ -166,15 +166,15 @@ void drawHist2Gamma(){
 		tex->DrawLatex(0.25,0.4,Form("S (3#sigma) = %.0f",signalYield));
 		tex->DrawLatex(0.25,0.35,Form("B (3#sigma) = %.0f",backgroundYield));
 		tex->DrawLatex(0.25,0.3,Form("S/B = %.2f",signalYield/backgroundYield));
-		tex->DrawLatex(0.25,0.25,Form("S/#sqrt{S+B} = %.2f",gausIntegral/sqrt(gausIntegral+backgroundIntegral)));
+		tex->DrawLatex(0.25,0.25,Form("S/#sqrt{S+B} = %.2f",TMath::Abs(gausIntegral)/sqrt(TMath::Abs(gausIntegral+backgroundIntegral))));
 		// Draw mean and sigma of the gaussian function
 		tex->DrawLatex(0.25,0.5,Form("#mu = %.3f #pm %.3f",f1->GetParameter(1),f1->GetParError(1)));
-		tex->DrawLatex(0.25,0.45,Form("#sigma = %.3f #pm %.3f",f1->GetParameter(2),f1->GetParError(2)));
+		tex->DrawLatex(0.25,0.45,Form("#sigma = %.3f #pm %.3f",TMath::Abs(f1->GetParameter(2)),f1->GetParError(2)));
 		
 		// tex->DrawLatex(0.2,0.6,Form("S/#sqrt{B} = %.2f",gausIntegral/sqrt(backgroundIntegral)));
 
 		// draw box for signal region
-		Double_t etaPrimeMass = 0.956;
+		Double_t etaPrimeMass = 0.958;
    		Double_t etaSigma = 0.013;
    		Double_t signalRegion[2] = {etaPrimeMass-(3*etaSigma),etaPrimeMass+(3*etaSigma)};
    		Double_t leftSidebandRegion[2] = {etaPrimeMass-(7*etaSigma),etaPrimeMass-(4*etaSigma)};

@@ -1151,9 +1151,87 @@ void eventSelection(){
    // // FSModeHistogram::dumpHistogramCache();
    // c->SaveAs("mass4Gamma_allCut.pdf");
 
-   
+   // TCanvas *c = new TCanvas("c","c",800,800);
+   // TH1F* h_mandelstam_t[6];
+   // TH1F* h_mandelstam_t_MC[6];
+   // for (Int_t iCombination=0;iCombination<6;iCombination++) {
+   //    h_mandelstam_t[iCombination] = Get1DHistWithCuts(FNDEtaPi0AC[iCombination],NT,"MANDELSTAM_T(1)",Form("2DLowPhotonAC%d,2DOmegaAC%d,etaPrimeSelect%d,DeltaCut%d,OmegaCosThetaCOMCut%d",iCombination,iCombination,iCombination,iCombination,iCombination),"", 
+   //                                  101,-10.05,0.05,"t [GeV^{2}]","counts","");
+   //    h_mandelstam_t_MC[iCombination] = Get1DHistWithCuts(FNMCEtaPi0AC[iCombination],NT,"MANDELSTAM_T(1)",Form("2DLowPhotonAC%d,2DOmegaAC%d,etaPrimeSelect%d,DeltaCut%d,OmegaCosThetaCOMCut%d",iCombination,iCombination,iCombination,iCombination,iCombination),"", 
+   //                                  101,-10.05,0.05,"t [GeV^{2}]","counts","");
+   // }
+   // // sum up all combinations
+   // TH1F* h_mandelstam_t_sum = (TH1F*)h_mandelstam_t[0]->Clone("h_mandelstam_t_sum");
+   // TH1F* h_mandelstam_t_sum_MC = (TH1F*)h_mandelstam_t_MC[0]->Clone("h_mandelstam_t_sum_MC");
+   // for (Int_t iCombination=1;iCombination<6;iCombination++) {
+   //    h_mandelstam_t_sum->Add(h_mandelstam_t[iCombination]);
+   //    h_mandelstam_t_sum_MC->Add(h_mandelstam_t_MC[iCombination]);
+   // }
+   // h_mandelstam_t_sum->Draw("HIST");
+   // // scale MC
+   // h_mandelstam_t_sum_MC->Scale(0.6*h_mandelstam_t_sum->Integral()/h_mandelstam_t_sum_MC->Integral());
+   // h_mandelstam_t_sum_MC->SetLineColor(kRed);
+   // h_mandelstam_t_sum_MC->Draw("HIST SAME");
+   // // draw legend
+   // TLegend *leg = new TLegend(0.4,0.2,0.6,0.3);
+   // leg->AddEntry(h_mandelstam_t_sum,"Data","l");
+   // leg->AddEntry(h_mandelstam_t_sum_MC,"Scaled MC","l");
+   // leg->Draw();
+   // // draw box from -1.0 to 0.0
+   // TBox *box = new TBox(-1.0,0.0,0.0,1.05*h_mandelstam_t_sum->GetMaximum());
+   // box->SetFillColor(kGreen);
+   // box->SetFillStyle(3002);
+   // box->Draw();
+   // c->SaveAs("mandelstam_t.pdf");
+
+   // PlotMass2GammaCombinationSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,40,0.85,1.05,"","etaPrime2DLowPhotonAC2DOmegaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // PlotMass2GammaCombinationSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,40,0.85,1.05,"t_lt1","etaPrime2DLowPhotonAC2DOmegaACDeltaCutOmegaCosThetaCOMCut",kFALSE,kFALSE,kFALSE,kFALSE);
+   // FSModeHistogram::dumpHistogramCache("histograms/Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime");
+
+   // vector<TH1F*> v_h1_4GammaMass_OmegaCosThetaCMSCut = GetMass4GammaSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,50,1.0,3.0,"","2DEtaPi0LowPhotonOmegaACDeltaCutOmegaCosThetaCMSCut",
+   //                   kTRUE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,
+   //                   kFALSE,kTRUE,FNMCEtaPi0AC,FNMCGen,"CUT(mcebeam)");
+
+   // vector<TH1F*> v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1 = GetMass4GammaSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,50,1.0,3.0,"t_lt1","2DEtaPi0LowPhotonOmegaACDeltaCutOmegaCosThetaCMSCut",
+   //                   kTRUE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,
+   //                   kFALSE,kTRUE,FNMCEtaPi0AC,FNMCGen,"CUT(mcebeam,mct_lt1)");
+
+   // TCanvas *c = new TCanvas("c","c",1200,600);
+   // c->Divide(2,1);
+   // c->cd(1);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[0]->SetLineColor(kBlack);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[0]->SetLineColor(kRed);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[0]->SetMarkerColor(kBlack);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[0]->SetMarkerColor(kRed);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[0]->Draw("");
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[0]->Draw("SAME");
+   // TLegend *leg0 = new TLegend(0.4,0.2,0.6,0.3);
+   // leg0->AddEntry(v_h1_4GammaMass_OmegaCosThetaCMSCut[0],"All previous cuts","l");
+   // leg0->AddEntry(v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[0],"+ |t| < 1 GeV^{2}","l");
+   // leg0->Draw();
+   // c->cd(2);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[1]->SetLineColor(kBlack);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[1]->SetLineColor(kRed);
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[1]->SetTitle("");
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[1]->GetXaxis()->SetTitle("m_{4#gamma} [GeV/c^{2}]");
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[1]->GetYaxis()->SetTitle("Acceptance");
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut[1]->Draw("HIST");
+   // v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[1]->Draw("HIST SAME");
+   // TLegend *leg1 = new TLegend(0.4,0.2,0.6,0.3);
+   // leg1->AddEntry(v_h1_4GammaMass_OmegaCosThetaCMSCut[1],"All previous cuts","l");
+   // leg1->AddEntry(v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1[1],"+ |t| < 1 GeV^{2}","l");
+   // leg1->Draw();
+   // // FSModeHistogram::dumpHistogramCache();
+   // c->SaveAs("mass4Gamma_allCut_tlt1.pdf");
+
+   vector<TH1F*> v_h1_4GammaMass_OmegaCosThetaCMSCut_tlt1 = GetMass4GammaSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,50,1.0,3.0,"t_lt1","2DEtaPi0LowPhotonOmegaACDeltaCutOmegaCosThetaCMSCut",
+                     kTRUE,kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,
+                     kTRUE,kFALSE,FNMCEtaPi0AC,FNMCGen,"CUT(mcebeam,mct_lt1)");
+
+   FSModeHistogram::dumpHistogramCache("histograms/Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime");
 
  }
+
 
 void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberOfBin, Double_t xmin, Double_t xmax, TString cutName, TString tag, Bool_t isGamma3Cut = kFALSE, Bool_t isPi0Cut3 = kFALSE, Bool_t isLMACut = kFALSE, Bool_t isSidebandSub = kFALSE){
    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
@@ -2177,15 +2255,17 @@ vector<TH1F*> GetMass4GammaSkimmed2DEtaPiAC(TString *fileName, TString treeName,
 		tex->SetTextColor(1);
 		tex->SetTextAlign(12);
 		tex->DrawLatex(0.3,0.85,Form("Selection: #eta' #rightarrow #gamma_{%d}#gamma_{%d} & #pi^{0} #rightarrow #gamma_{%d}#gamma_{%d}",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]));
-      
-      TH2F* h2 = FSModeHistogram::getTH2F(fileName[iCombination],treeName,"",Form("GJCOSTHETA(%d,%d;%d,%d;B):MASS(%d,%d,%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1],vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]),binningGJCosTheta,cutString);
-      h2->SetTitle("");
-      h2->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]));
-      h2->SetYTitle("cos#theta_{GJ}");
-      c2->cd(iCombination+1);
-      h2->Draw("COLZ");
-      h2->SetTitle(Form("Selection: #eta' #rightarrow #gamma_{%d}#gamma_{%d} & #pi^{0} #rightarrow #gamma_{%d}#gamma_{%d}",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]));
-      if (isIncludeMC) {
+      TH2F *h2;
+      if (!isSidebandSub){
+         h2 = FSModeHistogram::getTH2F(fileName[iCombination],treeName,"",Form("GJCOSTHETA(%d,%d;%d,%d;B):MASS(%d,%d,%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1],vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]),binningGJCosTheta,cutString);
+         h2->SetTitle("");
+         h2->SetXTitle(Form("m_{\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}\\gamma_{%d}} [GeV/c^{2}]",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]));
+         h2->SetYTitle("cos#theta_{GJ}");
+         c2->cd(iCombination+1);
+         h2->Draw("COLZ");
+         h2->SetTitle(Form("Selection: #eta' #rightarrow #gamma_{%d}#gamma_{%d} & #pi^{0} #rightarrow #gamma_{%d}#gamma_{%d}",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]));
+      }
+      if (isIncludeMC && !isSidebandSub) {
          TH1F* hMC = FSModeHistogram::getTH1F(fileNameMC[iCombination],treeName,"",Form("MASS(%d,%d,%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]),binning,cutString);
          TH2F* h2MC_m_CosThetaGJ = FSModeHistogram::getTH2F(fileNameMC[iCombination],treeName,"",Form("GJCOSTHETA(%d,%d;%d,%d;B):MASS(%d,%d,%d,%d)",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1],vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],vectorIndexCombination[5-iCombination][0],vectorIndexCombination[5-iCombination][1]),binningGJCosTheta,cutString);
          // hMC->SetLineColor(kRed);
@@ -2202,11 +2282,11 @@ vector<TH1F*> GetMass4GammaSkimmed2DEtaPiAC(TString *fileName, TString treeName,
       }
       if (iCombination == 0) {
          h1_4GammaMass = new TH1F(*h);
-         h2_m_CosThetaGJTotal = new TH2F(*h2);
+         if (!isSidebandSub) h2_m_CosThetaGJTotal = new TH2F(*h2);
       }
       else {
          h1_4GammaMass->Add(h);
-         h2_m_CosThetaGJTotal->Add(h2);
+         if (!isSidebandSub) h2_m_CosThetaGJTotal->Add(h2);
       }
    }
    if (isPi0Select) cutName += "_pi0Select";
@@ -2222,66 +2302,70 @@ vector<TH1F*> GetMass4GammaSkimmed2DEtaPiAC(TString *fileName, TString treeName,
    h1_4GammaMass->SetMinimum(0);
    h1_4GammaMass->Draw();
    v_h1_4GammaMass.push_back(h1_4GammaMass);
-   TLegend *leg = new TLegend(0.65,0.75,0.85,0.85);
-   leg->SetFillColor(0);
-   leg->SetBorderSize(0);
-   leg->AddEntry(h1_4GammaMass,"Data","l");
-   if (isIncludeMC) {
-      // h1_4GammaMassMC->SetLineColor(kRed);
-      // h1_4GammaMassMC->SetLineWidth(2);
-      // Float_t MCScale = 0.5*h1_4GammaMass->Integral()/h1_4GammaMassMC->Integral();
-      // h1_4GammaMassMC->Scale(MCScale);
-      // h1_4GammaMassMC->Draw("HIST SAME");
-      TH1F* h1_MCthrown = FSModeHistogram::getTH1F(fileNameMCThrown,NT,"","MCMASS(2,3,4,5)",binning,mcThrownCutName);
-      TH1F* h1_acceptance = new TH1F(*h1_4GammaMassMC);
-      h1_acceptance->Divide(h1_MCthrown);
-      TH1F* h1_acceptance_unscaled = new TH1F(*h1_acceptance); 
-      v_h1_4GammaMass.push_back(h1_acceptance_unscaled);
-      h1_acceptance->SetLineColor(kBlue);
-      h1_acceptance->SetLineWidth(2);
-      Float_t rightmax = 0.3;
-      Float_t scale = h1_4GammaMass->GetMaximum()/rightmax;
-      // gPad->GetUymax()/rightmax;
-      // cout << rightmax << " " << scale << endl;
-      h1_acceptance->Scale(scale);
-      h1_acceptance->Draw("HIST SAME");
-      auto axis_acc = new TGaxis(xmax,0.,xmax, h1_4GammaMass->GetMaximum(),0.,rightmax,210,"+L");
-      axis_acc->SetLineColor(kBlue);
-      axis_acc->SetLabelColor(kBlue);
-      axis_acc->SetTitle("Acceptance");
-      axis_acc->SetTitleColor(kBlue);
-      axis_acc->SetTitleOffset(1.2);
-      axis_acc->SetTitleSize(0.04);
-      axis_acc->SetLabelSize(0.03);
-      axis_acc->SetLabelFont(42);
-      axis_acc->SetTitleFont(42);
-      axis_acc->Draw();
-      // leg->AddEntry(h1_4GammaMassMC,Form("MC (scale = %0.2f)",MCScale),"l");
-      leg->AddEntry(h1_acceptance,"Acceptance","l");
+   if (!isSidebandSub) {
+      TLegend *leg = new TLegend(0.65,0.75,0.85,0.85);
+      leg->SetFillColor(0);
+      leg->SetBorderSize(0);
+      leg->AddEntry(h1_4GammaMass,"Data","l");
+      if (isIncludeMC) {
+         // h1_4GammaMassMC->SetLineColor(kRed);
+         // h1_4GammaMassMC->SetLineWidth(2);
+         // Float_t MCScale = 0.5*h1_4GammaMass->Integral()/h1_4GammaMassMC->Integral();
+         // h1_4GammaMassMC->Scale(MCScale);
+         // h1_4GammaMassMC->Draw("HIST SAME");
+         TH1F* h1_MCthrown = FSModeHistogram::getTH1F(fileNameMCThrown,NT,"","MCMASS(2,3,4,5)",binning,mcThrownCutName);
+         TH1F* h1_acceptance = new TH1F(*h1_4GammaMassMC);
+         h1_acceptance->Divide(h1_MCthrown);
+         TH1F* h1_acceptance_unscaled = new TH1F(*h1_acceptance); 
+         v_h1_4GammaMass.push_back(h1_acceptance_unscaled);
+         h1_acceptance->SetLineColor(kBlue);
+         h1_acceptance->SetLineWidth(2);
+         Float_t rightmax = 0.3;
+         Float_t scale = h1_4GammaMass->GetMaximum()/rightmax;
+         // gPad->GetUymax()/rightmax;
+         // cout << rightmax << " " << scale << endl;
+         h1_acceptance->Scale(scale);
+         h1_acceptance->Draw("HIST SAME");
+         auto axis_acc = new TGaxis(xmax,0.,xmax, h1_4GammaMass->GetMaximum(),0.,rightmax,210,"+L");
+         axis_acc->SetLineColor(kBlue);
+         axis_acc->SetLabelColor(kBlue);
+         axis_acc->SetTitle("Acceptance");
+         axis_acc->SetTitleColor(kBlue);
+         axis_acc->SetTitleOffset(1.2);
+         axis_acc->SetTitleSize(0.04);
+         axis_acc->SetLabelSize(0.03);
+         axis_acc->SetLabelFont(42);
+         axis_acc->SetTitleFont(42);
+         axis_acc->Draw();
+         // leg->AddEntry(h1_4GammaMassMC,Form("MC (scale = %0.2f)",MCScale),"l");
+         leg->AddEntry(h1_acceptance,"Acceptance","l");
+      }
+      leg->Draw();
    }
-   leg->Draw();
    c->SaveAs(Form("Mass4GammaTotal_%s_%s.pdf",cutName.Data(),tag.Data()));
-   if (isIncludeMC) {
-      TH2F* h2_m_CosThetaGJMCThrown = FSModeHistogram::getTH2F(fileNameMCThrown,NT,"","MCGJCOSTHETA(2,5;3,4;B):MCMASS(2,3,4,5)",binningGJCosTheta,mcThrownCutName);
-      TH2F* h2_m_CosThetaGJAcceptance = (TH2F*)h2MC_m_CosThetaGJTotal->Clone("h2_m_CosThetaGJMCAcceptance");
-      h2_m_CosThetaGJAcceptance->Divide(h2_m_CosThetaGJMCThrown);
-      h2_m_CosThetaGJAcceptance->SetTitle("Acceptance");
-      h2_m_CosThetaGJAcceptance->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
-      h2_m_CosThetaGJAcceptance->SetYTitle("cos#theta_{GJ}");
-      c->SetWindowSize(400,800);
-      h2_m_CosThetaGJAcceptance->Draw("COLZ");
-      c->SaveAs(Form("Mass4Gamma_CosThetaGJ_Acceptance_%s_%s.pdf",cutName.Data(),tag.Data()));
+   if (!isSidebandSub) {
+      if (isIncludeMC) {
+         TH2F* h2_m_CosThetaGJMCThrown = FSModeHistogram::getTH2F(fileNameMCThrown,NT,"","MCGJCOSTHETA(2,5;3,4;B):MCMASS(2,3,4,5)",binningGJCosTheta,mcThrownCutName);
+         TH2F* h2_m_CosThetaGJAcceptance = (TH2F*)h2MC_m_CosThetaGJTotal->Clone("h2_m_CosThetaGJMCAcceptance");
+         h2_m_CosThetaGJAcceptance->Divide(h2_m_CosThetaGJMCThrown);
+         h2_m_CosThetaGJAcceptance->SetTitle("Acceptance");
+         h2_m_CosThetaGJAcceptance->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
+         h2_m_CosThetaGJAcceptance->SetYTitle("cos#theta_{GJ}");
+         c->SetWindowSize(400,800);
+         h2_m_CosThetaGJAcceptance->Draw("COLZ");
+         c->SaveAs(Form("Mass4Gamma_CosThetaGJ_Acceptance_%s_%s.pdf",cutName.Data(),tag.Data()));
+      }
+      c2->SaveAs(Form("Mass4Gamma_CosThetaGJ_%s_%s.pdf",cutName.Data(),tag.Data()));
+      c2->Clear();
+      c2->Divide(1,1);
+      c2->cd(1);
+      c2->SetWindowSize(400,800);
+      h2_m_CosThetaGJTotal->SetTitle("Total cos#theta_{GJ} vs. 4#gamma invariant mass");
+      h2_m_CosThetaGJTotal->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
+      h2_m_CosThetaGJTotal->SetYTitle("cos#theta_{GJ}");
+      h2_m_CosThetaGJTotal->Draw("COLZ");
+      c2->SaveAs(Form("Mass4Gamma_CosThetaGJ_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
    }
-   c2->SaveAs(Form("Mass4Gamma_CosThetaGJ_%s_%s.pdf",cutName.Data(),tag.Data()));
-   c2->Clear();
-   c2->Divide(1,1);
-   c2->cd(1);
-   c2->SetWindowSize(400,800);
-   h2_m_CosThetaGJTotal->SetTitle("Total cos#theta_{GJ} vs. 4#gamma invariant mass");
-   h2_m_CosThetaGJTotal->SetXTitle("m_{4#gamma} [GeV/c^{2}]");
-   h2_m_CosThetaGJTotal->SetYTitle("cos#theta_{GJ}");
-   h2_m_CosThetaGJTotal->Draw("COLZ");
-   c2->SaveAs(Form("Mass4Gamma_CosThetaGJ_Total_%s_%s.pdf",cutName.Data(),tag.Data()));
    delete c;
    delete c2;
    return v_h1_4GammaMass;

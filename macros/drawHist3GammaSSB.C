@@ -1,17 +1,17 @@
-TString fileName = "histograms/3GammaMass_1stCombinationSSB_pi0Select5,2DPiAC0,2DEtaAC0.cache.root";
-TString outputTag = "3GammaMass_1stCombinationSSB_pi0Select5,2DPiAC0,2DEtaAC0";
+TString fileName = "histograms/Mass3GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_etaPrime.cache.root";
+TString outputTag = "Mass3GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_etaPrime";
 
 const Int_t NCombinations = 4;
 const Int_t NCuts = 1;
-const Int_t NComposites = 3;
+const Int_t NComposites = 1;
 const Int_t NHist = NCombinations*NCuts*NComposites;
 
 void gluex_style();
 void drawHist3GammaSSB(){
 	gSystem->Exec("mkdir -p plots");
 
-	// gluex_style();
-	// gROOT->ForceStyle();	
+	gluex_style();
+	gROOT->ForceStyle();	
 
 	// string drawOptions="HIST";
 
@@ -33,12 +33,16 @@ void drawHist3GammaSSB(){
 	
 	TCanvas *c[NComposites];
 	for (Int_t iCanvas=0;iCanvas<NComposites;iCanvas++){
-		c[iCanvas] = new TCanvas(Form("c%d",iCanvas+1),Form("c%d",iCanvas+1),800,600);
+		c[iCanvas] = new TCanvas(Form("c%d",iCanvas+1),Form("c%d",iCanvas+1),1200,600);
 		c[iCanvas]->Divide(2,2);
 	}
 
+	TCanvas *c_SSB = new TCanvas("c_SSB","c_SSB",800,600);
+	c_SSB->Divide(2,2);
+
 	Int_t iPlot=0;
 	Color_t markerColor=1;
+	Double_t SSB_max = 0;
 	for (Int_t iHist=0;iHist<NHist;iHist++){	
 		if (iHist%NComposites==0){
 			if ((iPlot)%NCombinations==0) iPlot=0;
@@ -53,6 +57,20 @@ void drawHist3GammaSSB(){
 				h1[iHist]->GetXaxis()->SetTitle(Form("m_{#gamma_{%d}#gamma_{%d}#gamma_{%d}} [GeV]",vectorIndexCombination3[iPlot-1][0],vectorIndexCombination3[iPlot-1][1],vectorIndexCombination3[iPlot-1][2]));
 				h1[iHist]->GetYaxis()->SetTitle(Form("Events / %d MeV",(Int_t)(h1[iHist]->GetBinWidth(1)*1000)));
 				h1[iHist]->Draw("SAME");
+				switch(iComposite){
+					case 2:
+						c_SSB->cd(iPlot);
+						h1[iHist]->SetLineColor(kBlack);
+						h1[iHist]->SetMinimum(-1.1*h1[iHist]->GetMaximum());
+						h1[iHist]->Draw("HIST");
+						break;
+					case 0:
+						c_SSB->cd(iPlot);
+						h1[iHist]->SetLineColor(kRed);
+						h1[iHist]->SetFillColor(kRed);
+						h1[iHist]->Draw("HIST SAME");
+						break;
+				}
 				cout << iHist+1 << " " << iComposite+1 << " " << iPlot << " " << markerColor << endl;
 			}
 		}
@@ -66,6 +84,7 @@ void drawHist3GammaSSB(){
 	for (Int_t iCanvas=0;iCanvas<NComposites;iCanvas++){
 		c[iCanvas]->SaveAs(Form("plots/%s_%d.pdf",outputTag.Data(),iCanvas+1));
 	}
+	c_SSB->SaveAs(Form("plots/%s_SSB.pdf",outputTag.Data()));
 }
 
 void gluex_style() {
@@ -103,7 +122,7 @@ void gluex_style() {
  	
 	// histogram settings
 	gluex_style->SetOptStat(0);     // no stats box by default
-	gluex_style->SetOptTitle(1);    // no title by default
+	gluex_style->SetOptTitle(0);    // no title by default
 	gluex_style->SetHistLineWidth(2); 
 	gluex_style->SetNdivisions(508,"xyz"); // some ticks were very bunched, lets reduce the number of divisions to label 
 	// gluex_style->SetOptFit(0111);

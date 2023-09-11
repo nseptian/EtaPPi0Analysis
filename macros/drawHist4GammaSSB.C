@@ -1,8 +1,8 @@
-TString fileName = "histograms/4GammaMass_all_SSB_LMAC_t_lt0.5.cache.root";
-TString outputTag = "4GammaEtaPrimePi0SSBLMAC_t_lt0.5_Hist";
+TString fileName = "histograms/Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime.cache.root";
+TString outputTag = "Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime";
 
 const Int_t NCombinations = 6;
-const Int_t NCuts = 2;
+const Int_t NCuts = 1;
 const Int_t NComposites = 3;
 const Int_t NHist = NCombinations*NCuts*NComposites;
 
@@ -10,10 +10,10 @@ void gluex_style();
 void drawHist4GammaSSB(){
 	gSystem->Exec("mkdir -p plots");
 
-	// gluex_style();
-	// gROOT->ForceStyle();	
+	gluex_style();
+	gROOT->ForceStyle();	
 
-	// string drawOptions="HIST";
+	string drawOptions="HIST";
 
 	TFile* f=new TFile(fileName,"READ");
 	TString hname;
@@ -31,7 +31,7 @@ void drawHist4GammaSSB(){
 			h1[i]->Add(h1[i+2]);
 		}
 		else f->GetObject(hname.Data(),h1[i]);
-		// cout << i+1 << endl;
+		cout << i+1 << endl;
 	}
 	
 	TCanvas *c[NComposites];
@@ -74,7 +74,7 @@ void drawHist4GammaSSB(){
 	
 	TCanvas *c_total[NComposites];
 	for (Int_t iCanvas=0;iCanvas<NComposites;iCanvas++){
-		c_total[iCanvas] = new TCanvas(Form("c_total%d",iCanvas+1),Form("c_total%d",iCanvas+1),800,600);
+		c_total[iCanvas] = new TCanvas(Form("c_total%d",iCanvas+1),Form("c_total%d",iCanvas+1),800,800);
 	}
 
 	for (Int_t iComposite=0;iComposite<NComposites;iComposite++){
@@ -95,10 +95,57 @@ void drawHist4GammaSSB(){
 			// h1_total[iComposite][iMarkerColor]->SetLineColor(iMarkerColor+1);
 			// h1_total[iComposite][iMarkerColor]->SetTitle("");
 			c_total[iComposite]->cd();
-			h1_total[iComposite][iMarkerColor]->Draw("SAME");
+			h1_total[iComposite][iMarkerColor]->Draw("HIST SAME");
 		}
 		c_total[iComposite]->SaveAs(Form("plots/%s_total_%d.pdf",outputTag.Data(),iComposite+1));
 	}
+	
+	// draw signal and weighted sidebands in the same canvas
+	c_total[2]->cd();
+	h1_total[2][0]->SetMarkerColor(1);
+	h1_total[2][0]->SetLineColor(1);
+	// h1_total[2][0]->SetFillColor(0);
+	h1_total[2][0]->Draw("HIST");
+
+	h1_total[0][0]->SetMarkerColor(2);
+	h1_total[0][0]->SetLineColor(2);
+	h1_total[0][0]->SetFillColor(2);
+	h1_total[0][0]->Draw("HIST SAME");
+
+	h1_total[2][0]->SetTitle("Signal and weighted sidebands");
+	TLegend *legend = new TLegend(0.6,0.75,0.8,0.9);
+	legend->AddEntry(h1_total[2][0],"Signal","f");
+	legend->AddEntry(h1_total[0][0],"Weighted sidebands","f");
+	legend->Draw();
+
+	// set y axis range
+	h1_total[2][0]->GetYaxis()->SetRangeUser(1.1*h1_total[0][0]->GetMinimum(),1.1*h1_total[2][0]->GetMaximum());
+	c_total[2]->SaveAs(Form("plots/%s_total_signal_weightedSidebands.pdf",outputTag.Data()));
+
+	// draw histogram before and after sideband subtraction
+	c_total[2]->cd();
+	h1_total[2][0]->SetMarkerColor(1);
+	h1_total[2][0]->SetLineColor(1);
+	// h1_total[2][0]->SetFillColor(0);
+	h1_total[2][0]->Draw("");
+
+	h1_total[1][0]->SetMarkerColor(2);
+	h1_total[1][0]->SetLineColor(2);
+	h1_total[1][0]->SetFillColor(2);
+	h1_total[1][0]->Draw("SAME");
+
+	h1_total[2][0]->SetTitle("");
+	legend->Clear();
+	legend->AddEntry(h1_total[2][0],"Before","pl");
+	legend->AddEntry(h1_total[1][0],"After","pl");
+	legend->Draw();
+
+	// set y axis range
+	h1_total[2][0]->GetYaxis()->SetRangeUser(1.1*h1_total[1][0]->GetMinimum(),1.1*h1_total[2][0]->GetMaximum());
+	c_total[2]->SaveAs(Form("plots/%s_total_before_after_SSB.pdf",outputTag.Data()));
+
+
+
 }
 
 void gluex_style() {
