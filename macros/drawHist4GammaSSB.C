@@ -1,5 +1,5 @@
-TString fileName = "histograms/Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime.cache.root";
-TString outputTag = "Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime";
+TString fileName = "histograms/Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime.cache.root";
+TString outputTag = "Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime";
 
 const Int_t NCombinations = 6;
 const Int_t NCuts = 1;
@@ -95,6 +95,7 @@ void drawHist4GammaSSB(){
 			// h1_total[iComposite][iMarkerColor]->SetLineColor(iMarkerColor+1);
 			// h1_total[iComposite][iMarkerColor]->SetTitle("");
 			c_total[iComposite]->cd();
+			// h1_total[iComposite][iMarkerColor]->SetMinimum(0);
 			h1_total[iComposite][iMarkerColor]->Draw("HIST SAME");
 		}
 		c_total[iComposite]->SaveAs(Form("plots/%s_total_%d.pdf",outputTag.Data(),iComposite+1));

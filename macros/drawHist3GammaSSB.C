@@ -1,5 +1,5 @@
-TString fileName = "histograms/Mass3GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_etaPrime.cache.root";
-TString outputTag = "Mass3GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_etaPrime";
+TString fileName = "histograms/Mass3GammCombination_allBase_tlt1_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_etaPrime.cache.root";
+TString outputTag = "Mass3GammCombination_allBase_tlt1_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_etaPrime";
 
 const Int_t NCombinations = 4;
 const Int_t NCuts = 1;
@@ -114,10 +114,10 @@ void gluex_style() {
 	// axis labels and settings
     gluex_style->SetStripDecimals(0);
  	gluex_style->SetLabelSize(0.045,"xyz"); // size of axis value font
- 	gluex_style->SetTitleSize(0.06,"xyz"); // size of axis title font
+ 	gluex_style->SetTitleSize(0.07,"xyz"); // size of axis title font
  	gluex_style->SetTitleFont(42,"xyz"); // font option
  	gluex_style->SetLabelFont(42,"xyz"); 
- 	gluex_style->SetTitleOffset(1.5,"y"); 
+ 	gluex_style->SetTitleOffset(1.0,"xy"); 
  	gluex_style->SetLabelOffset(0.01,"xyz");   // stop collisions of "0"s at the origin
  	
 	// histogram settings

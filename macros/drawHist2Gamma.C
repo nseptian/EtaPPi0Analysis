@@ -1,12 +1,12 @@
-TString fileName = "histograms/Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime.cache.root";
-TString outputTag = "Mass2GammCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_DeltaCut_OmegaCosThetaCOMCut_tlt1_etaPrime";
+TString fileName = "histograms/Mass2GammaCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_etaPrime.cache.root";
+TString outputTag = "Mass2GammaCombination_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_etaPrime";
 
 const Int_t NCombinations = 6;
 Int_t vectorIndexCombination[NCombinations][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
-const Int_t NCuts = 2;
+const Int_t NCuts = 4;
 const Int_t NHist = NCombinations*NCuts;
 const Bool_t isFitHist = kTRUE;
-const Int_t iHistToFit = 1;
+const Int_t iHistToFit = 3;
 
 void gluex_style();
 void drawHist2Gamma(){
@@ -21,7 +21,7 @@ void drawHist2Gamma(){
 	TString hname;
 	TH1F *h1[NHist];
 	TH1F *h1_total[NCuts];
-	TCanvas *c1 = new TCanvas("c1","c1",800,800);
+	TCanvas *c1 = new TCanvas("c1","c1",800,600);
 	c1->Divide(3,2);
 	Color_t markerColor=1;
 	Int_t totalCounter=0;
@@ -44,7 +44,7 @@ void drawHist2Gamma(){
 
 				h1[i]->Draw("SAME");
 
-				//draw box for pi0 region
+				// draw box for pi0 region
 				// TBox *box = new TBox(0.11,0,0.16,h1[i]->GetMaximum());
 				// box->SetFillColor(4);
 				// box->SetFillStyle(3002);
@@ -53,7 +53,7 @@ void drawHist2Gamma(){
 				Int_t iCombinationDraw = 6-iCombination;
 				if (iCombination==0) iCombinationDraw = iCombination;
 
-				//draw line at eta prime mass
+				// draw line at eta prime mass
 				TLine *line = new TLine(0.957,0,0.957,h1[i]->GetMaximum());
 				line->SetLineColor(2);
 				line->SetLineStyle(2);
@@ -61,12 +61,14 @@ void drawHist2Gamma(){
 
 
 				// draw iCombination number for pi0
+
 				TLatex *tex = new TLatex();
 				tex->SetNDC();
 				tex->SetTextFont(42);
 				tex->SetTextSize(0.06);
 				tex->SetTextColor(1);
 				tex->SetTextAlign(12);
+				// tex->DrawLatex(0.25,0.85,Form("%d",iCombinationDraw+1));
 				tex->DrawLatex(0.25,0.85,Form("Selection: #pi^{0} #rightarrow #gamma_{%d}#gamma_{%d}",vectorIndexCombination[iCombinationDraw][0],vectorIndexCombination[iCombinationDraw][1]));				
 				// cout << i+1 << endl;
 				// cout << iCombination << endl;
@@ -90,12 +92,17 @@ void drawHist2Gamma(){
 		h1_total[iColor]->Draw("SAME");
 	}
 	TLegend *leg = new TLegend(0.2,0.73,0.45,0.9);
-	leg->AddEntry(h1_total[0],"All previous cuts","lep");
+	// leg->AddEntry(h1_total[0],"All previous cuts","lep");
+	leg->AddEntry(h1_total[0],"Fiducial+exclusivity cuts","lep");
 	// leg->AddEntry(h1_total[1],"+ Delta cuts","lep");
+	leg->AddEntry(h1_total[1],"+ 2#pi^{0} & #eta#pi^{0} bkg rejection","lep");
+	// leg->AddEntry(h1_total[1],"+ X #rightarrow 2#gamma bkg rejection","lep");
 	// leg->AddEntry(h1_total[2],"+ #omega cos(#theta_{CMS}) cuts","lep");
-	leg->AddEntry(h1_total[1],"+ |t| < 1.0 GeV^{2}","lep");
-	// leg->AddEntry(h1_total[2],"+ #omega#pi^{0} rejection cuts","lep");
+	// leg->AddEntry(h1_total[2],"+ Low mass alternative cuts","lep");
+	leg->AddEntry(h1_total[2],"+ low E photon & #omega#pi^{0} rejection   ","lep");
+	leg->AddEntry(h1_total[3],"+ #eta'#pi^{0} bkg rejection","lep");
 	leg->Draw();
+	c1->SetWindowSize(600,800);
 	c1->SaveAs(Form("plots/%s_total.pdf",outputTag.Data()));
 	
 	//Fit h1_total with gaussian with mean at eta prime mass and polynomial background
@@ -163,8 +170,8 @@ void drawHist2Gamma(){
 		tex->SetTextSize(0.04);
 		tex->SetTextColor(1);
 		tex->SetTextAlign(12);
-		tex->DrawLatex(0.25,0.4,Form("S (3#sigma) = %.0f",signalYield));
-		tex->DrawLatex(0.25,0.35,Form("B (3#sigma) = %.0f",backgroundYield));
+		tex->DrawLatex(0.25,0.4,Form("S(3#sigma) = %.0f",signalYield));
+		tex->DrawLatex(0.25,0.35,Form("B(3#sigma) = %.0f",backgroundYield));
 		tex->DrawLatex(0.25,0.3,Form("S/B = %.2f",signalYield/backgroundYield));
 		tex->DrawLatex(0.25,0.25,Form("S/#sqrt{S+B} = %.2f",TMath::Abs(gausIntegral)/sqrt(TMath::Abs(gausIntegral+backgroundIntegral))));
 		// Draw mean and sigma of the gaussian function
@@ -174,8 +181,8 @@ void drawHist2Gamma(){
 		// tex->DrawLatex(0.2,0.6,Form("S/#sqrt{B} = %.2f",gausIntegral/sqrt(backgroundIntegral)));
 
 		// draw box for signal region
-		Double_t etaPrimeMass = 0.958;
-   		Double_t etaSigma = 0.013;
+		Double_t etaPrimeMass = f1->GetParameter(1);
+   		Double_t etaSigma = TMath::Abs(f1->GetParameter(2));
    		Double_t signalRegion[2] = {etaPrimeMass-(3*etaSigma),etaPrimeMass+(3*etaSigma)};
    		Double_t leftSidebandRegion[2] = {etaPrimeMass-(7*etaSigma),etaPrimeMass-(4*etaSigma)};
    		Double_t rightSidebandRegion[2] = {etaPrimeMass+(4*etaSigma),etaPrimeMass+(7*etaSigma)};
@@ -226,7 +233,7 @@ void gluex_style() {
 	// axis labels and settings
     gluex_style->SetStripDecimals(0);
  	gluex_style->SetLabelSize(0.045,"xyz"); // size of axis value font
- 	gluex_style->SetTitleSize(0.05,"xyz"); // size of axis title font
+ 	gluex_style->SetTitleSize(0.06,"xyz"); // size of axis title font
  	gluex_style->SetTitleFont(42,"xyz"); // font option
  	gluex_style->SetLabelFont(42,"xyz"); 
  	gluex_style->SetTitleOffset(1.5,"y"); 
