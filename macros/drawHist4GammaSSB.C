@@ -1,5 +1,5 @@
-TString fileName = "histograms/Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime.cache.root";
-TString outputTag = "Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime";
+TString fileName = "histograms/GlueXI_GlueX2020_Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime.cache.root";
+TString outputTag = "GlueXI_GlueX2020_Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime";
 
 const Int_t NCombinations = 6;
 const Int_t NCuts = 1;
@@ -105,6 +105,10 @@ void drawHist4GammaSSB(){
 	c_total[2]->cd();
 	h1_total[2][0]->SetMarkerColor(1);
 	h1_total[2][0]->SetLineColor(1);
+	h1_total[2][0]->GetYaxis()->SetTitleSize(0.04);
+	h1_total[2][0]->GetYaxis()->SetTitleOffset(1.8);
+	h1_total[2][0]->GetXaxis()->SetTitle("m_{4#gamma} (GeV)");
+	h1_total[2][0]->GetXaxis()->SetTitleSize(0.04);
 	// h1_total[2][0]->SetFillColor(0);
 	h1_total[2][0]->Draw("HIST");
 
