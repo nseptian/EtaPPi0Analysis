@@ -33,12 +33,12 @@ TString FNDEtaPi0AC[6] = {"/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat
                           "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/*/skimmedTree/skimmedTree_AllCombination_tlt1_2DPi0EtaAC_4.root",
                           "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/*/skimmedTree/skimmedTree_AllCombination_tlt1_2DPi0EtaAC_5.root"};
 
-TString FNMCEtaPi0AC[6] = {"/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_AllCombination_2DPi0EtaAC_0.root",
-                          "/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_AllCombination_2DPi0EtaAC_1.root",
-                          "/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_AllCombination_2DPi0EtaAC_2.root",
-                          "/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_AllCombination_2DPi0EtaAC_3.root",
-                          "/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_AllCombination_2DPi0EtaAC_4.root",
-                          "/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_AllCombination_2DPi0EtaAC_5.root"};
+TString FNMCEtaPi0AC[6] = {"/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/RunPeriod-2018-01/skimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_0.root",
+                          "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/RunPeriod-2018-01/skimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_1.root",
+                          "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/RunPeriod-2018-01/skimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_2.root",
+                          "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/RunPeriod-2018-01/skimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_3.root",
+                          "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/RunPeriod-2018-01/skimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_4.root",
+                          "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/RunPeriod-2018-01/skimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_5.root"};
 
 TString FNMCBGGENEtaPi0AC[6] = {"/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_BGGen_AllCombination_2DPi0EtaAC_0.root",
                           "/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_BGGen_AllCombination_2DPi0EtaAC_1.root",
@@ -73,16 +73,25 @@ void skimTree(){
    for (Int_t iRunPeriod=0;iRunPeriod<4;iRunPeriod++){
       for (Int_t iCombination=0;iCombination<6;iCombination++) {
          // skimTree with cut allBase
-         if (iRunPeriod==3) FSTree::skimTree(FNDS[iRunPeriod],"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_AllCombination_tlt1_%d.root",DataDir[iRunPeriod].Data(),iCombination),Form("CUT(allBaseII,t_lt1,pi0Select%d)",5-iCombination));
-         else FSTree::skimTree(FNDS[iRunPeriod],"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_AllCombination_tlt1_%d.root",DataDir[iRunPeriod].Data(),iCombination),Form("CUT(allBase,t_lt1,pi0Select%d)",5-iCombination));         
+         // if (iRunPeriod==3) FSTree::skimTree(FNDS[iRunPeriod],"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_AllCombination_tlt1_%d.root",DataDir[iRunPeriod].Data(),iCombination),Form("CUT(allBaseII,t_lt1,pi0Select%d)",5-iCombination));
+         // else FSTree::skimTree(FNDS[iRunPeriod],"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_AllCombination_tlt1_%d.root",DataDir[iRunPeriod].Data(),iCombination),Form("CUT(allBase,t_lt1,pi0Select%d)",5-iCombination));         
          
          // skimTree with cut allBase + 2DPiAC0 + 2DEtaAC0
          // if (iRunPeriod==3) FSTree::skimTree(FNDS[iRunPeriod],"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_AllCombination_tlt1_2DPi0EtaAC_%d.root",DataDir[iRunPeriod].Data(),iCombination),Form("CUT(allBaseII,t_lt1,pi0Select%d,2DPiAC%d,2DEtaAC%d)",5-iCombination,iCombination,iCombination));
          // else FSTree::skimTree(FNDS[iRunPeriod],"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_AllCombination_tlt1_2DPi0EtaAC_%d.root",DataDir[iRunPeriod].Data(),iCombination),Form("CUT(allBase,t_lt1,pi0Select%d,2DPiAC%d,2DEtaAC%d)",5-iCombination,iCombination,iCombination));
          
-         // FSTree::skimTree(FNMC,"ntFSGlueX_100_4000000",Form("/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_AllCombination_tlt1_2DPi0EtaAC_%d.root",iCombination),Form("CUT(allBase,t_lt1,pi0Select%d,2DPiAC%d,2DEtaAC%d)",5-iCombination,iCombination,iCombination));
          // FSTree::skimTree(FNMCBGGEN,"ntFSGlueX_100_4000000",Form("/d/grid17/septian/EtaPPi0_4Gamma/2018S/skimmedTree/skimmedTree_MC_BGGen_tlt1_AllCombination_2DPi0EtaAC_%d.root",iCombination),Form("CUT(allBase,t_lt1,pi0Select%d,2DPiAC%d,2DEtaAC%d)",5-iCombination,iCombination,iCombination));
       }
+   }
+   for (Int_t iCombination=0;iCombination<6;iCombination++){
+      FSTree::skimTree(FNMC,"ntFSGlueX_100_4000000",Form("%sskimmedTree/skimmedTree_genr8_MC_AllCombination_tlt1_2DPi0EtaAC_%d.root",DataDir[1].Data(),iCombination),Form("CUT(allBase,t_lt1,pi0Select%d,2DPiAC%d,2DEtaAC%d)",5-iCombination,iCombination,iCombination));
+   }
+}
+
+void skimTreeCombinations(){
+   for (Int_t iCombination=0;iCombination<6;iCombination++){
+      // FSTree::skimTree(FNDEtaPi0AC[iCombination],"ntFSGlueX_100_4000000",Form("/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/skimmedTree_GlueXI_GlueX2020_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_%d.root",iCombination),Form("CUT(2DLowPhotonAC%d,2DOmegaAC%d,2DEtaPrimeAC%d,DeltaCut%d,etaPrimeSelectLoose%d)",iCombination,iCombination,iCombination,5-iCombination,iCombination));
+      FSTree::skimTree(FNMCEtaPi0AC[iCombination],"ntFSGlueX_100_4000000",Form("/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/skimmedTree_genr8_MC_GlueX2018S_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_%d.root",iCombination),Form("CUT(2DLowPhotonAC%d,2DOmegaAC%d,2DEtaPrimeAC%d,DeltaCut%d,etaPrimeSelectLoose%d)",iCombination,iCombination,iCombination,5-iCombination,iCombination));
    }
 }
 
@@ -120,6 +129,7 @@ void PlotOmegaMassWithCutsSkimmed2DEtaPiAC(TString *fileName,TString treeName,In
 void DefineGamma3Cuts();
 void DefinePi0SelectCuts();
 void DefineEtaPrimeSelectCuts();
+void DefineEtaPrimeSelectLooseCuts();
 void DefineLMACuts();
 void Define2DAlternativePi0Cuts();
 void Define2DAlternativeEtaCuts();
@@ -208,6 +218,7 @@ void setup(){
    FSCut::defineCut("allBase","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank1,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseII","CUT(unusedE,unusedTracks,zProton,protMom,e8086,chi2lt2,rank1,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseBGGen","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
+   FSCut::defineCut("allBaseThrownMC","CUT(unusedE,unusedTracks,zProton,protMom,mcebeam,chi2lt2,rank1,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseChi2Rank2","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank2,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseChi2Rank3","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank3,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
    FSCut::defineCut("allBaseChi2Rank4","CUT(unusedE,unusedTracks,zProton,protMom,e8288,chi2lt2,rank4,rf,photFiducialA,photFiducialB,photFiducialC,photFiducialD)");
@@ -241,6 +252,7 @@ void setup(){
    DefineGamma3Cuts();
    DefinePi0SelectCuts();
    DefineEtaPrimeSelectCuts();
+   DefineEtaPrimeSelectLooseCuts();
    DefineLMACuts();
    Define2DAlternativePi0Cuts();
    Define2DAlternativeEtaCuts();
@@ -283,7 +295,7 @@ void setup(){
    FSTree::showDefinedMacros();
 
    // skimTree();
-
+   skimTreeCombinations();
 }
 
 void gluex_style() {
@@ -344,10 +356,10 @@ void eventSelection(){
    // PlotMass2GammaCombinationSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,40,0.85,1.05,"","etaPrime2DLowPhotonAC2DOmegaAC2DEtaPrimeACDeltaCut",kFALSE,kFALSE,kFALSE,kFALSE);
    // FSModeHistogram::dumpHistogramCache("histograms/GlueXI_GlueX2020_Mass2GammaCombination_allBase_tlt1_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_etaPrime");
 
-   vector<TH1F*> v_h1_4GammaMass_DeltaCut_tlt1 = GetMass4GammaSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,50,1.0,3.0,"t_lt1","2DEtaPi0LowPhotonOmegaACDeltaCut",
-                     kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,kFALSE,kFALSE,
-                     kTRUE,kFALSE,FNMCEtaPi0AC,FNMCGen,"CUT(mcebeam,mct_lt1)");
-   FSModeHistogram::dumpHistogramCache("histograms/GlueXI_GlueX2020_Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime");
+   // vector<TH1F*> v_h1_4GammaMass_DeltaCut_tlt1 = GetMass4GammaSkimmed2DEtaPiAC(FNDEtaPi0AC,NT,50,1.0,3.0,"t_lt1","2DEtaPi0LowPhotonOmegaACDeltaCut",
+   //                   kTRUE,kTRUE,kTRUE,kFALSE,kTRUE,kFALSE,kFALSE,
+   //                   kTRUE,kFALSE,FNMCEtaPi0AC,FNMCGen,"CUT(mcebeam,mct_lt1)");
+   // FSModeHistogram::dumpHistogramCache("histograms/GlueXI_GlueX2020_Mass4Gamma_allBase_2DPiEtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut_tlt1_etaPrime");
 
  }
 
@@ -387,7 +399,7 @@ void PlotMass2GammaCombination(TString fileName, TString treeName, Int_t numberO
       //select pi0 from alternative 2-gamma
       if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")) {
          Int_t iCombination2 = 5-iCombination;
-         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.17",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
+         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.18",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
          cutString += Form(",rejectCombination%d",iCombination2);
       }
       if (isLMACut) {
@@ -504,7 +516,7 @@ void PlotMass2GammaCombinationSkimmed2DEtaPiAC(TString *fileName, TString treeNa
       //select pi0 from alternative 2-gamma
       if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrimeLMACDeltaCut") || tag==TString("etaPrime2DLowPhotonAC") || tag==TString("etaPrime2DLowPhotonAC2DOmegaAC") || tag==TString("etaPrime2DLowPhotonAC2DOmegaAC2DEtaPrimeAC") || tag==TString("etaPrime2DLowPhotonAC2DOmegaACDeltaCut") || tag==TString("etaPrime2DLowPhotonAC2DOmegaACDeltaCutOmegaCosThetaCOMCut")) {
          Int_t iCombination2 = 5-iCombination;
-         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.17",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
+         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.18",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
          cutString += Form(",rejectCombination%d",iCombination2);
       }
       if (tag==TString("etaPrimeLMAC")) {
@@ -630,7 +642,7 @@ void PlotMass2GammaCombinationBGGen(TString fileName, TString treeName, Int_t nu
       //select pi0 from alternative 2-gamma
       if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrime2DPiAC") || tag==TString("etaPrime2DPiEtaAC") || tag==TString("etaPrime2DPiEtaACDeltaCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaMomentumCut") || tag==TString("etaPrime2DPiEtaACDeltaCutOmegaCosThetaCOMCut")) {
          Int_t iCombination2 = 5-iCombination;
-         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.17",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
+         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.18",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
          cutString += Form(",rejectCombination%d",iCombination2);
       }
       if (tag==TString("etaPrimeLMAC")) {
@@ -820,7 +832,7 @@ void PlotMass2GammaCombinationBGGenSkimmed2DEtaPiAC(TString *fileName, TString t
       //select pi0 from alternative 2-gamma
       if (tag==TString("etaPrime") || tag==TString("etaPrimeSSB") || tag==TString("etaPrimeLMAC") || tag==TString("etaPrimeLMACDeltaCut") || tag==TString("etaPrime2DLowPhotonAC") || tag==TString("etaPrime2DLowPhotonAC2DOmegaAC") || tag==TString("etaPrime2DLowPhotonAC2DOmegaACDeltaCut") || tag==TString("etaPrime2DLowPhotonAC2DOmegaACDeltaCutOmegaCosThetaCOMCut")) {
          Int_t iCombination2 = 5-iCombination;
-         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.17",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
+         FSCut::defineCut(Form("rejectCombination%d",iCombination2),Form("MASS(%d,%d)>0.11&&MASS(%d,%d)<0.18",vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1],vectorIndexCombination[iCombination2][0],vectorIndexCombination[iCombination2][1]));
          cutString += Form(",rejectCombination%d",iCombination2);
       }
       if (tag==TString("etaPrimeLMAC")) {
@@ -1557,7 +1569,7 @@ TString GetCutStringMass3GammaCombination(Int_t vectorIndex1,Int_t vectorIndex2,
 // }
 
 TString GetPi0CutStringMass3Combination(Int_t vectorIndex1,Int_t vectorIndex2,Int_t vectorIndex3){
-   TString cutString = Form("MASS(%d,%d,%d)<0.11 || MASS(%d,%d,%d)>0.17",vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3);
+   TString cutString = Form("MASS(%d,%d,%d)<0.11 || MASS(%d,%d,%d)>0.18",vectorIndex1,vectorIndex2,vectorIndex3,vectorIndex1,vectorIndex2,vectorIndex3);
    return cutString;
 }
 
@@ -1730,6 +1742,18 @@ void DefineEtaPrimeSelectCuts(){
    }
 }
 
+void DefineEtaPrimeSelectLooseCuts(){
+   Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
+   //use values from the fit
+   Double_t etaPrimeMass = 0.957;
+   Double_t etaSigma = 0.014;
+   Double_t signalRegion[2] = {etaPrimeMass-(10*etaSigma),etaPrimeMass+(10*etaSigma)};
+   for (Int_t iCombination = 0;iCombination < 6; iCombination++) {
+      TString SelectMassString = Form("MASS(%d,%d)>%f&&MASS(%d,%d)<%f",vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],signalRegion[0],vectorIndexCombination[iCombination][0],vectorIndexCombination[iCombination][1],signalRegion[1]);
+      FSCut::defineCut(Form("etaPrimeSelectLoose%d",iCombination),SelectMassString.Data());
+   }
+}
+
 void DefineLMACuts(){
    Int_t vectorIndexCombination[6][2] = {{2,3},{2,4},{2,5},{3,4},{3,5},{4,5}};
    for (Int_t iCombination = 0;iCombination < 6; iCombination++) {
@@ -1749,7 +1773,7 @@ void DefineLMACuts(){
       // cout << iCut1 << ", " << iCut2 << " " << iCutt1 << ", " << iCutt2 << endl;
       // cout << "LMAC" << iCombination << " = " << vectorIndexCombination[iCombination][0] << "," << vectorIndexCombination[iCombination][1] << ":" << vectorIndexCombination[5-iCombination][0] << "," << vectorIndexCombination[5-iCombination][1] << " cuts on " << vectorIndexCombination[iCut1][0] << "," << vectorIndexCombination[iCut1][1] << ":" << vectorIndexCombination[iCut2][0] << "," << vectorIndexCombination[iCut2][1] << "  &  " << vectorIndexCombination[iCutt1][0] << "," << vectorIndexCombination[iCutt1][1] << ":" << vectorIndexCombination[iCutt2][0] << "," << vectorIndexCombination[iCutt2][1] << endl;
       // TString CutString =  Form("(MASS(%d,%d)<0.15&&MASS(%d,%d)<0.15)",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
-      TString CutString =  Form("(MASS(%d,%d)>0.17&&MASS(%d,%d)>0.17)&&(MASS(%d,%d)>0.17&&MASS(%d,%d)>0.17)",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      TString CutString =  Form("(MASS(%d,%d)>0.18&&MASS(%d,%d)>0.18)&&(MASS(%d,%d)>0.18&&MASS(%d,%d)>0.18)",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
       FSCut::defineCut(Form("LMAC%d",iCombination),CutString.Data());
    }
 }
@@ -1772,9 +1796,9 @@ void Define2DAlternativePi0Cuts(){
 
       // cout << iCut1 << ", " << iCut2 << " " << iCutt1 << ", " << iCutt2 << endl;
       cout << "2DPiAC" << iCombination << " = " << vectorIndexCombination[iCombination][0] << "," << vectorIndexCombination[iCombination][1] << ":" << vectorIndexCombination[5-iCombination][0] << "," << vectorIndexCombination[5-iCombination][1] << " cuts on " << vectorIndexCombination[iCut1][0] << "," << vectorIndexCombination[iCut1][1] << ":" << vectorIndexCombination[iCut2][0] << "," << vectorIndexCombination[iCut2][1] << "  &  " << vectorIndexCombination[iCutt1][0] << "," << vectorIndexCombination[iCutt1][1] << ":" << vectorIndexCombination[iCutt2][0] << "," << vectorIndexCombination[iCutt2][1] << endl;
-      TString CutString =  Form("!((MASS(%d,%d)<0.17&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
-      CutString +=  Form("&&!((MASS(%d,%d)<0.17&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
-      // TString CutString =  Form("!((MASS(%d,%d)<0.17&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)<0.17&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      TString CutString =  Form("!((MASS(%d,%d)<0.18&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
+      CutString +=  Form("&&!((MASS(%d,%d)<0.18&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      // TString CutString =  Form("!((MASS(%d,%d)<0.18&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)<0.18&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
       // cout << CutString << endl;
       FSCut::defineCut(Form("2DPiAC%d",iCombination),CutString.Data());
    }
@@ -1801,10 +1825,10 @@ void Define2DAlternativeEtaCuts(){
 
       // cout << iCut1 << ", " << iCut2 << " " << iCutt1 << ", " << iCutt2 << endl;
       cout << "2DEtaAC" << iCombination << " = " << vectorIndexCombination[iCombination][0] << "," << vectorIndexCombination[iCombination][1] << ":" << vectorIndexCombination[5-iCombination][0] << "," << vectorIndexCombination[5-iCombination][1] << " cuts on " << vectorIndexCombination[iCut1][0] << "," << vectorIndexCombination[iCut1][1] << ":" << vectorIndexCombination[iCut2][0] << "," << vectorIndexCombination[iCut2][1] << "  &  " << vectorIndexCombination[iCutt1][0] << "," << vectorIndexCombination[iCutt1][1] << ":" << vectorIndexCombination[iCutt2][0] << "," << vectorIndexCombination[iCutt2][1] << endl;
-      TString CutString =  Form("!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],etaSignalRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],etaSignalRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],etaSignalRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],etaSignalRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
-      CutString += Form("&&!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],etaSignalRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],etaSignalRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],etaSignalRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],etaSignalRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      TString CutString =  Form("!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],etaSignalRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],etaSignalRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],etaSignalRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],etaSignalRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
+      CutString += Form("&&!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],etaSignalRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],etaSignalRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],etaSignalRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],etaSignalRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
       // cout << CutString << endl;
       FSCut::defineCut(Form("2DEtaAC%d",iCombination),CutString.Data());
    }
@@ -1833,10 +1857,10 @@ void Define2DAlternativeEtaPrimeCuts(){
 
       // cout << iCut1 << ", " << iCut2 << " " << iCutt1 << ", " << iCutt2 << endl;
       cout << "2DEtaPrimeAC" << iCombination << " = " << vectorIndexCombination[iCombination][0] << "," << vectorIndexCombination[iCombination][1] << ":" << vectorIndexCombination[5-iCombination][0] << "," << vectorIndexCombination[5-iCombination][1] << " cuts on " << vectorIndexCombination[iCut1][0] << "," << vectorIndexCombination[iCut1][1] << ":" << vectorIndexCombination[iCut2][0] << "," << vectorIndexCombination[iCut2][1] << "  &  " << vectorIndexCombination[iCutt1][0] << "," << vectorIndexCombination[iCutt1][1] << ":" << vectorIndexCombination[iCutt2][0] << "," << vectorIndexCombination[iCutt2][1] << endl;
-      TString CutString =  Form("!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],rightSidebandRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],leftSidebandRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],rightSidebandRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],leftSidebandRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
-      CutString += Form("&&!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],rightSidebandRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],leftSidebandRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],rightSidebandRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],leftSidebandRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      TString CutString =  Form("!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],rightSidebandRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],leftSidebandRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],rightSidebandRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],leftSidebandRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
+      CutString += Form("&&!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],rightSidebandRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],leftSidebandRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],rightSidebandRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],leftSidebandRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
       // cout << CutString << endl;
       FSCut::defineCut(Form("2DEtaPrimeAC%d",iCombination),CutString.Data());
    }
@@ -1863,10 +1887,10 @@ void Define2DAlternativeLowEnergyPhotonCuts(){
 
       // cout << iCut1 << ", " << iCut2 << " " << iCutt1 << ", " << iCutt2 << endl;
       cout << "2DLowPhotonAC" << iCombination << " = " << vectorIndexCombination[iCombination][0] << "," << vectorIndexCombination[iCombination][1] << ":" << vectorIndexCombination[5-iCombination][0] << "," << vectorIndexCombination[5-iCombination][1] << " cuts on " << vectorIndexCombination[iCut1][0] << "," << vectorIndexCombination[iCut1][1] << ":" << vectorIndexCombination[iCut2][0] << "," << vectorIndexCombination[iCut2][1] << "  &  " << vectorIndexCombination[iCutt1][0] << "," << vectorIndexCombination[iCutt1][1] << ":" << vectorIndexCombination[iCutt2][0] << "," << vectorIndexCombination[iCutt2][1] << endl;
-      TString CutString =  Form("!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],LowPhotonSignalRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],LowPhotonSignalRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
-      CutString += Form("&&!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],LowPhotonSignalRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],LowPhotonSignalRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      TString CutString =  Form("!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],LowPhotonSignalRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],LowPhotonSignalRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
+      CutString += Form("&&!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],LowPhotonSignalRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],LowPhotonSignalRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],LowPhotonSignalRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
       // cout << CutString << endl;
       FSCut::defineCut(Form("2DLowPhotonAC%d",iCombination),CutString.Data());
    }
@@ -1893,10 +1917,10 @@ void Define2DAlternativeOmegaCuts(){
 
       // cout << iCut1 << ", " << iCut2 << " " << iCutt1 << ", " << iCutt2 << endl;
       cout << "2DOmegaAC" << iCombination << " = " << vectorIndexCombination[iCombination][0] << "," << vectorIndexCombination[iCombination][1] << ":" << vectorIndexCombination[5-iCombination][0] << "," << vectorIndexCombination[5-iCombination][1] << " cuts on " << vectorIndexCombination[iCut1][0] << "," << vectorIndexCombination[iCut1][1] << ":" << vectorIndexCombination[iCut2][0] << "," << vectorIndexCombination[iCut2][1] << "  &  " << vectorIndexCombination[iCutt1][0] << "," << vectorIndexCombination[iCutt1][1] << ":" << vectorIndexCombination[iCutt2][0] << "," << vectorIndexCombination[iCutt2][1] << endl;
-      TString CutString =  Form("!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],OmegaSignalRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],OmegaSignalRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],OmegaSignalRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],OmegaSignalRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
-      CutString += Form("&&!((MASS(%d,%d)<0.17&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],OmegaSignalRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],OmegaSignalRegion[0]);
-      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.17)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],OmegaSignalRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],OmegaSignalRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
+      TString CutString =  Form("!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],OmegaSignalRegion[1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],OmegaSignalRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],OmegaSignalRegion[1],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1],vectorIndexCombination[iCut1][0],vectorIndexCombination[iCut1][1],OmegaSignalRegion[0],vectorIndexCombination[iCut2][0],vectorIndexCombination[iCut2][1]);
+      CutString += Form("&&!((MASS(%d,%d)<0.18&&MASS(%d,%d)<%f)&&(MASS(%d,%d)>0.11&&MASS(%d,%d)>%f))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],OmegaSignalRegion[1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],OmegaSignalRegion[0]);
+      CutString += Form("&&!((MASS(%d,%d)<%f&&MASS(%d,%d)<0.18)&&(MASS(%d,%d)>%f&&MASS(%d,%d)>0.11))",vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],OmegaSignalRegion[1],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1],vectorIndexCombination[iCutt1][0],vectorIndexCombination[iCutt1][1],OmegaSignalRegion[0],vectorIndexCombination[iCutt2][0],vectorIndexCombination[iCutt2][1]);
       // cout << CutString << endl;
       FSCut::defineCut(Form("2DOmegaAC%d",iCombination),CutString.Data());
    }
@@ -3507,7 +3531,7 @@ Double_t absMomentum2EnergyRatio(Double_t PxPA, Double_t PyPA, Double_t PzPA, Do
    // Double_t leftSidebandRegion[2] = {etaPrimeMass-(7*etaSigma),etaPrimeMass-(4*etaSigma)};
    // Double_t rightSidebandRegion[2] = {etaPrimeMass+(4*etaSigma),etaPrimeMass+(7*etaSigma)};
 
-   // Double_t pi0RejectionRegion[2] = {0.11,0.17};
+   // Double_t pi0RejectionRegion[2] = {0.11,0.18};
 
    // TCanvas *c0 = new TCanvas("c","c",800,800);
    // TH2F* h2_m25_34 = Get2DHistWithCuts(FNDEtaPi0AC[0], NT, "MASS(2,5)", "MASS(3,4)", "2DLowPhotonAC0,2DOmegaAC0,etaPrimeSelect0,2DEtaPrimeAC0", "mass(2,5)_vs_mass(3,4)",

@@ -1,7 +1,9 @@
 TString dirName = "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/";
-TString baseFileName = "skimmedTree_GlueXI_GlueX2020_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut";
+// TString baseFileName = "skimmedTree_GlueXI_GlueX2020_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut";
+TString baseFileName = "skimmedTree_genr8_MC_GlueX2018S_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut";
 TString treeName = "ntFSGlueX_100_4000000";
-TString outName = "resetGammaIndex_GlueXI_GlueX2020_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut.root";
+// TString outName = "resetGammaIndex_GlueXI_GlueX2020_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut.root";
+TString outName = "resetGammaIndex_genr8_MC_GlueX2018S_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut.root";
 const Int_t NCombination = 6;
 
 void resetGammaIndex(){
@@ -21,9 +23,14 @@ void resetGammaIndex(){
     Double_t outRPzP[4];
     Double_t outREnP[4];
 
+    Double_t outMCPxP[4];
+    Double_t outMCPyP[4];
+    Double_t outMCPzP[4];
+    Double_t outMCEnP[4];
+
     Double_t outShQualityP[4];
 
-    Double_t outOtherBr[66];
+    Double_t outOtherBr[150];
 
     // Get tree from the 1st combination
     TString fileName1st = Form("%s%s_%d.root",dirName.Data(),baseFileName.Data(),0);
@@ -86,20 +93,20 @@ void resetGammaIndex(){
         Double_t PxP[4],PyP[4],PzP[4],EnP[4];
         Double_t RPxP[4],RPyP[4],RPzP[4],REnP[4];
         Double_t ShQualityP[4];
-        Double_t OtherBr[66];
+        Double_t OtherBr[150];
 
         for (Int_t i=2;i<=5;i++){
-            t->SetBranchAddress(Form("PxP%d",i),&PxP[i]);
-            t->SetBranchAddress(Form("PyP%d",i),&PyP[i]);
-            t->SetBranchAddress(Form("PzP%d",i),&PzP[i]);
-            t->SetBranchAddress(Form("EnP%d",i),&EnP[i]);
+            t->SetBranchAddress(Form("PxP%d",i),&PxP[i-2]);
+            t->SetBranchAddress(Form("PyP%d",i),&PyP[i-2]);
+            t->SetBranchAddress(Form("PzP%d",i),&PzP[i-2]);
+            t->SetBranchAddress(Form("EnP%d",i),&EnP[i-2]);
 
-            t->SetBranchAddress(Form("RPxP%d",i),&RPxP[i]);
-            t->SetBranchAddress(Form("RPyP%d",i),&RPyP[i]);
-            t->SetBranchAddress(Form("RPzP%d",i),&RPzP[i]);
-            t->SetBranchAddress(Form("REnP%d",i),&REnP[i]);
+            t->SetBranchAddress(Form("RPxP%d",i),&RPxP[i-2]);
+            t->SetBranchAddress(Form("RPyP%d",i),&RPyP[i-2]);
+            t->SetBranchAddress(Form("RPzP%d",i),&RPzP[i-2]);
+            t->SetBranchAddress(Form("REnP%d",i),&REnP[i-2]);
 
-            t->SetBranchAddress(Form("ShQualityP%d",i),&ShQualityP);
+            t->SetBranchAddress(Form("ShQualityP%d",i),&ShQualityP[i-2]);
         }
 
         iExclude=0;
@@ -123,23 +130,27 @@ void resetGammaIndex(){
         cout << "File: " << fileName << endl;
         cout << "Number of entries: " << nEntries << endl;
         cout << "Gamma index combination: " << vectorIndexCombination[iCombination][0] << " " << vectorIndexCombination[iCombination][1] << " " << vectorIndexCombination[5-iCombination][0] << " " << vectorIndexCombination[5-iCombination][1] << endl;
+        for (Int_t i=2;i<6;i++) {
+            cout << gammaIndex[i-2] << " --> " << i << endl;
+        }
         
         //loop over entries and fill output branches
+        cout << "Filling output branches..." << endl;
         for (Int_t iEntry=0;iEntry<t->GetEntries();iEntry++){
             t->GetEntry(iEntry);
             // gamma index reset
-            for (Int_t i=2;i<6;i++) {
-                outPxP[i] = PxP[gammaIndex[i-2]];
-                outPyP[i] = PyP[gammaIndex[i-2]];
-                outPzP[i] = PzP[gammaIndex[i-2]];
-                outEnP[i] = EnP[gammaIndex[i-2]];
+            for (Int_t i=0;i<4;i++) {
+                outPxP[i] = PxP[gammaIndex[i]-2];
+                outPyP[i] = PyP[gammaIndex[i]-2];
+                outPzP[i] = PzP[gammaIndex[i]-2];
+                outEnP[i] = EnP[gammaIndex[i]-2];
 
-                outRPxP[i] = RPxP[gammaIndex[i-2]];
-                outRPyP[i] = RPyP[gammaIndex[i-2]];
-                outRPzP[i] = RPzP[gammaIndex[i-2]];
-                outREnP[i] = REnP[gammaIndex[i-2]];
+                outRPxP[i] = RPxP[gammaIndex[i]-2];
+                outRPyP[i] = RPyP[gammaIndex[i]-2];
+                outRPzP[i] = RPzP[gammaIndex[i]-2];
+                outREnP[i] = REnP[gammaIndex[i]-2];
 
-                outShQualityP[i] = ShQualityP[gammaIndex[i-2]];
+                outShQualityP[i] = ShQualityP[gammaIndex[i]-2];
             }
             std::copy(std::begin(OtherBr), std::end(OtherBr), std::begin(outOtherBr));
             // cout << "Entry: " << iEntry << endl;
