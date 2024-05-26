@@ -3,6 +3,8 @@
 
 const TString dataDir = "/d/grid17/septian/GlueX_Data/tree_gggg__B4_FSRootFlat/";
 const TString rootFile = "sPlot_resetGammaIndex_GlueXI_GlueX2020_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut.root";
+const TString rootFileMC = "sPlot_resetGammaIndex_genr8_MC_GlueX2018S_FidExclusive_tlt1_2DPi0EtaAC_2DLowPhotonAC_2DOmegaAC_2DEtaPrimeAC_DeltaCut.root";
+const Bool_t includeMC = kTRUE;
 const TString binnedRootFileName = "TreeData.root";
 const TString binnedResultsFileName = "ResultsHSMinuit2.root";
 const TString outDir = "sPlotWithMass4GammaBin/";
@@ -213,6 +215,29 @@ void DrawWithWeights(TString inFileName){
         }
     }
 
+    TH1F *h1_MassPi0Gamma1_Signal_MC = new TH1F("h1_MassPi0Gamma1_Signal_MC","m(#pi^{0}#gamma_{2})",100,0.0,3.0);
+    TH1F *h1_MassPi0Gamma2_Signal_MC = new TH1F("h1_MassPi0Gamma2_Signal_MC","m(#pi^{0}#gamma_{3})",100,0.0,3.0);
+
+    if (includeMC) {
+        TFile *fMC = new TFile(Form("%s%s",dataDir.Data(),rootFileMC.Data()));
+        TTree *tMC = (TTree*)fMC->Get("ntFSGlueX_100_4000000");
+        tMC->SetBranchAddress("massOmega1",&MassPi0Gamma1);
+        tMC->SetBranchAddress("massOmega2",&MassPi0Gamma2);
+        for (Int_t iEntry=0;iEntry<tMC->GetEntries();iEntry++){
+            tMC->GetEntry(iEntry);
+            h1_MassPi0Gamma1_Signal_MC->Fill(MassPi0Gamma1);
+            h1_MassPi0Gamma2_Signal_MC->Fill(MassPi0Gamma2);
+        }
+    }
+
+    // scale MC to data
+    if (includeMC) {
+        h1_MassPi0Gamma1_Signal_MC->Scale(h1_MassPi0Gamma1_Signal->Integral()/h1_MassPi0Gamma1_Signal_MC->Integral());
+        h1_MassPi0Gamma2_Signal_MC->Scale(h1_MassPi0Gamma2_Signal->Integral()/h1_MassPi0Gamma2_Signal_MC->Integral());
+        h1_MassPi0Gamma1_Signal_MC->SetLineColor(kRed);
+        h1_MassPi0Gamma2_Signal_MC->SetLineColor(kRed);
+    }
+
     TCanvas *c_Mass2Gamma = new TCanvas("c_Mass2Gamma","c_Mass2Gamma",1600,800);
     c_Mass2Gamma->Divide(3,2);
     c_Mass2Gamma->cd(1);
@@ -262,6 +287,7 @@ void DrawWithWeights(TString inFileName){
     h1_MassPi0Gamma1_Signal->GetYaxis()->SetTitle(Form("Events/%.3f GeV",h1_MassPi0Gamma1_Signal->GetBinWidth(1)));
     h1_MassPi0Gamma1_Signal->SetTitle("sWeighted m(#pi^{0}#gamma_{2}) Signal");
     h1_MassPi0Gamma1_Signal->Draw();
+    if (includeMC) h1_MassPi0Gamma1_Signal_MC->Draw("same");
     c_MassPi0Gamma1->cd(2);
     h1_MassPi0Gamma1_BG->GetXaxis()->SetTitle("m(#pi^{0}#gamma_{2}) [GeV])");
     h1_MassPi0Gamma1_BG->GetYaxis()->SetTitle(Form("Events/%.3f GeV",h1_MassPi0Gamma1_BG->GetBinWidth(1)));
@@ -276,6 +302,7 @@ void DrawWithWeights(TString inFileName){
     h1_MassPi0Gamma2_Signal->GetYaxis()->SetTitle(Form("Events/%.3f GeV",h1_MassPi0Gamma2_Signal->GetBinWidth(1)));
     h1_MassPi0Gamma2_Signal->SetTitle("sWeighted m(#pi^{0}#gamma_{3}) Signal");
     h1_MassPi0Gamma2_Signal->Draw();
+    if (includeMC) h1_MassPi0Gamma2_Signal_MC->Draw("same");
     c_MassPi0Gamma2->cd(2);
     h1_MassPi0Gamma2_BG->GetXaxis()->SetTitle("m(#pi^{0}#gamma_{3}) [GeV])");
     h1_MassPi0Gamma2_BG->GetYaxis()->SetTitle(Form("Events/%.3f GeV",h1_MassPi0Gamma2_BG->GetBinWidth(1)));
@@ -300,7 +327,9 @@ void DrawWithWeights(TString inFileName){
     delete c_Mass4Gamma;
     delete c_MassPi0Gamma1;
     delete c_MassPi0Gamma2;
-    // delete wts[NMass4GammaBins];    
+    delete h1_MassPi0Gamma1_Signal_MC;
+    delete h1_MassPi0Gamma2_Signal_MC;
+    // delete[] wts;    
 }
 
 void my_style(){
